@@ -1,2 +1,1 @@
-# WP-Manage-Ninja-WP-Framework Scaffolding
-# wp-expanse-tracker
+# WP-Expanse-Tracker (For Personal Use)
