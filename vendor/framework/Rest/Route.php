@@ -109,7 +109,7 @@ class Route
             'permission_callback' => [$this, 'permissionCallback']
         ];
 
-        return register_rest_route($this->prefix, "/{$path}", $options);
+        return register_rest_route($this->prefix, "/{$path}$", $options);
     }
 
     protected function getValue($value)
