@@ -1,0 +1,12 @@
+{
+    "autoload": {
+        "psr-4": {
+            "Alpha\\App\\": "app/",
+            "Alpha\\Framework\\": "vendor/framework"
+        },
+        "classmap": ["database"],
+        "files": [
+            "boot/globals.php"
+        ]
+    }
+}

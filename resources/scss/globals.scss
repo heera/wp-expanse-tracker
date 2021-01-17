@@ -1,0 +1,88 @@
+// text colors
+.text {
+    &-primary {
+        color: #20a0ff
+    }
+
+    &-success {
+        color: #13ce66
+    }
+
+    &-info {
+        color: #50bfff
+    }
+
+    &-warning {
+        color: #f7ba2a
+    }
+
+    &-bg-highlight {
+        background: #EEEEEE;
+    }
+
+    &-danger {
+        color: #ff4949
+    }
+
+    &-align {
+        &-right {
+            text-align: right;
+        }
+
+        &-center {
+            text-align: center;
+        }
+    }
+}
+
+.clickable {
+    cursor: pointer;
+}
+
+.content {
+    &-center {
+        display: flex;
+        justify-content: center;
+    }
+}
+
+.url {
+    color: #0073aa;
+    cursor: pointer;
+}
+
+// nullifiers
+.no-hover {
+    &:hover,
+    &:focus {
+        color: #606266 !important;
+        background: transparent !important;
+    }
+}
+
+.no-margin {
+    margin: 0;
+
+    &-bottom {
+        margin-bottom: initial !important;
+    }
+}
+
+// states
+.exist {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+// margins
+.mt25 {
+    margin-top: 25px;
+}
+
+// floats
+.float {
+    &-right {
+        float: right;
+    }
+}

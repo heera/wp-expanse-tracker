@@ -1,0 +1,61 @@
+@import "./vendor";
+@import "./variables";
+
+.alpha-app {
+    max-width: 100%;
+    display: block;
+    width: 100%;
+
+    & .alpha-main-menu-items {
+        margin-bottom: 20px;
+        background: white;
+        margin-left: -20px;
+
+        & .alpha-navigation {
+            margin-left: -20px;
+        }
+    }
+
+    & .alpha-body {
+        margin-right: 20px;
+        background: white;
+
+        & .header {
+            display: block;
+            width: auto;
+            border-bottom: 1px solid #e3e8ee;
+            clear: both;
+            overflow: hidden;
+            margin: 0;
+            padding: 10px 15px;
+            background-color: #f7fafc;
+            font-weight: 700;
+            color: #697386;
+        }
+
+        & .content {
+            padding: 20px;
+            background-color: #fff;
+        }
+    }
+
+    & .alpha-navigation.el-menu--horizontal.el-menu .el-menu-item.is-active {
+        background: #ecf5ff;
+    }
+
+    & .logo {
+        margin-left:20px;
+    }
+    
+    & .pager-wrap {
+        margin-top:20px;
+        text-align:right;
+    }
+
+    & .el-button.el-button--text {
+        font-weight: 400;
+    }
+    & .el-textarea .el-textarea__inner {
+        word-break: break-word;
+    }
+}
