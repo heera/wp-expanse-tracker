@@ -60,8 +60,12 @@
 
             <div class="result" v-if="result.length">
                 <hr>
-                <el-table :data="result" show-summary :summary-method="getSummaries">
-                    <el-table-column prop="title" label="Expense" />
+                <el-table
+                    :data="result"
+                    :summary-method="getSummaries"
+                    :show-summary="pagination.total > pagination.per_page"
+                >
+                    <el-table-column prop="title" label="Expense" width="300" />
 
                     <el-table-column prop="ledger.name" label="Ledger" />
 
@@ -90,7 +94,7 @@
                     v-if="total"
                     style="padding: 15px 10px;background-color:#F5F7FA;color:#606266;line-height: 1.4em;font-size: 14px;font-weight:700;"
                 >
-                    <el-col :span="4">Grand Total</el-col>
+                    <el-col :span="4">{{ totalTitle }}</el-col>
                     <el-col :span="20" style="text-align: right;">
                         {{ formatMoney(total) }}
                     </el-col>
@@ -182,6 +186,17 @@
                 sums[5] = this.formatMoney(sums[5]);
 
                 return sums;
+            }
+        },
+        computed: {
+            totalTitle() {
+                let title = 'Total';
+
+                if (this.pagination.total > this.pagination.per_page) {
+                    title = 'Grand Total';
+                }
+
+                return title;
             }
         },
         watch: {
