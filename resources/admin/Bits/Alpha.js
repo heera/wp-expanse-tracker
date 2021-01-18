@@ -60,11 +60,21 @@ export default class Alpha {
                 totalExpense() {
                     return window.alphaAdmin.total;
                 },
-                firstEntry() {
-                    return window.alphaAdmin.firstEntry;
+                firstEntry: {
+                    get() {
+                        return window.alphaAdmin.firstEntry;
+                    },
+                    set(value) {
+                        window.alphaAdmin.firstEntry = value;
+                    }
                 },
-                lastEntry() {
-                    return window.alphaAdmin.lastEntry;
+                lastEntry: {
+                    get() {
+                        return window.alphaAdmin.lastEntry;
+                    },
+                    set(value) {
+                        window.alphaAdmin.lastEntry = value;
+                    }
                 }
             }
         });
