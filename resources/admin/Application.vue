@@ -38,7 +38,7 @@
                 </li>
 
                 <div style="display:inline-block;margin:3px 20px 0;float:right;font-weight:500;color:#909399;">
-                    <div style="border-bottom:solid 1px #b3d8ff;padding:0 0 2px 0;">
+                    <div style="border-bottom:solid 1px #ddd;box-shadow:0px 1px 0px 0px #fff;padding:0 0 2px 0;">
                         Total Expanse: {{ formatMoney(totalExpense) }}
                     </div>
                     <div v-if="firstEntry" style="text-align:center;padding:2px 0 0 0;">

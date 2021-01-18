@@ -34,7 +34,7 @@
 
         <div class="content">
             <el-table :data="entries" style="width: 100%">
-                <el-table-column label="Entry" width="220">
+                <el-table-column label="Entry" width="220" prop="title" sortable>
                     <template slot-scope="scope">
                         <el-button type="text" @click="viewEntry(scope.row)">
                             <span class="el-icon-link"></span> {{ scope.row.title }}
@@ -42,7 +42,7 @@
                     </template>
                 </el-table-column>
 
-                <el-table-column label="Ledger" width="200">
+                <el-table-column label="Ledger" width="200" prop="ledger.name" sortable>
                     <template slot-scope="scope">
                         <el-button type="text" @click="viewLedger(scope.row)">
                             <span class="el-icon-link"></span> {{ scope.row.ledger.name }}
@@ -50,7 +50,7 @@
                     </template>
                 </el-table-column>
 
-                <el-table-column width="200" label="Accounts">
+                <el-table-column width="200" label="Accounts" prop="ledger.account.name" sortable>
                     <template slot-scope="scope">
                         <el-button type="text" @click="viewAccount(scope.row)">
                             <span class="el-icon-link"></span>
