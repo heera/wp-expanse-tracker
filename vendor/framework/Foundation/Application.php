@@ -126,13 +126,13 @@ class Application extends Container
     {
         require_once $this->basePath . 'app/Hooks/actions.php';
         require_once $this->basePath . 'app/Hooks/filters.php';
-        require_once $this->basePath . 'app/Http/Routes/rest.php';
 
         if (is_admin()) {
             require_once $this->basePath . 'app/Http/Routes/ajax.php';
         }
 
         $this->addAction('rest_api_init', function($wpRestServer) use ($app) {
+            require_once $this->basePath . 'app/Http/Routes/rest.php';
             $app->rest->registerRoutes();
         });
     }
