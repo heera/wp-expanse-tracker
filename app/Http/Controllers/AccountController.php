@@ -69,6 +69,7 @@ class AccountController extends Controller
         $ledgerIds = Account::with('ledgers')->find($id)->ledgers->lists('id');
         $entries = Entry::whereIn('ledger_id', $ledgerIds)->get();
         $account->total = $entries->sum('amount');
+        
         return [
             'account' => $account,
             'first' => date('d-m-Y', strtotime(Entry::oldest()->limit(1)->first()->created_at)),

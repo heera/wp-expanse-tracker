@@ -10,7 +10,7 @@ class Route
 
     protected $prefix = null;
 
-    protected $path = null;
+    protected $uri = null;
 
     protected $handler = null;
 
@@ -28,11 +28,11 @@ class Route
     ];
 
 
-    public function __construct($app, $prefix, $path, $handler, $method)
+    public function __construct($app, $prefix, $uri, $handler, $method)
     {
         $this->app = $app;
         $this->prefix = $prefix;
-        $this->path = $path;
+        $this->uri = $uri;
         $this->handler = $handler;
         $this->method = $method;
     }
@@ -101,7 +101,7 @@ class Route
 
     public function register()
     {
-        $path = $this->compilePath($this->path);
+        $uri = $this->compileRoute($this->uri);
 
         $options = [
             'methods' => $this->method,
@@ -109,7 +109,7 @@ class Route
             'permission_callback' => [$this, 'permissionCallback']
         ];
 
-        return register_rest_route($this->prefix, "/{$path}", $options);
+        return register_rest_route($this->prefix, "/{$uri}", $options);
     }
 
     protected function getValue($value)
@@ -139,19 +139,31 @@ class Route
         return $policyHandler;
     }
 
-    protected function compilePath($path)
+    protected function compileRoute($uri)
     {
-        return preg_replace_callback('/{(.*?)}/', function($match) use ($path) {
+        return preg_replace_callback('/\/{(.*?)}/', function($match) {
             // Default regx
             $regx = '[^\s]+';
             
-            if (isset($this->wheres[$match[1]])) {
-                $regx = $this->wheres[$match[1]];
+            $param = trim($match[1]);
+
+            if ($isOptional = strpos($param, '?')) {
+                $param = trim($param, '?');
             }
 
-            return "(?P<" . $match[1] . ">" . $regx . ")";
+            if (isset($this->wheres[$param])) {
+                $regx = $this->wheres[$param];
+            }
 
-        }, $path);
+            $pattern = "(?P<" . $param . ">" . $regx . ")";
+
+            if ($isOptional) {
+                $pattern = "(?:/" . $pattern . ")?";
+            }
+            
+            return $pattern;
+
+        }, $uri);
     }
 
     public function callback(\WP_REST_Request $request)
