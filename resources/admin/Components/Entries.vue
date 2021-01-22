@@ -94,6 +94,13 @@
                                     {{ longLocalDate(entry.created_at) }}
                                 </span>
                             </div>
+
+                            <div style="border-bottom:solid 1px #eee;padding: 2px 0;">
+                                Updated At:
+                                <span style="float:right;">
+                                    {{ longLocalDate(entry.updated_at) }}
+                                </span>
+                            </div>
                         </div>
                     </el-card>
                 </el-col>
