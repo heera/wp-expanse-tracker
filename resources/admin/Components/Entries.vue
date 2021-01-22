@@ -33,7 +33,73 @@
         </div>
 
         <div class="content">
-            <el-table :data="entries" style="width: 100%">
+            <el-row :gutter="20" v-if="display=='card'">
+                <el-col :span="8" v-for="entry in entries" style="margin-bottom:10px;">
+                    <el-card class="box-card">
+                        <div slot="header" class="clearfix">
+                            <el-button type="text" @click="viewEntry(entry)" style="padding:0;">
+                                {{ entry.title }}
+                            </el-button>
+
+                            <el-button type="text" style="float:right; padding:0;">
+                                <el-button
+                                    type="primary"
+                                    size="mini"
+                                    icon="el-icon-edit"
+                                    @click="editEntry(entry)"
+                                    style="margin-left: 0px;"
+                                />
+
+                                <confirm @yes="deleteEntry(entry)">
+                                    <el-button
+                                        size="mini"
+                                        type="danger"
+                                        icon="el-icon-delete"
+                                        slot="reference"
+                                    />
+                                </confirm>
+                            </el-button>
+                        </div>
+                        <div>
+                            <div style="border-bottom:solid 1px #eee;padding: 2px 0;">
+                                Ledger:
+                                <span style="float:right;">
+                                    <el-button
+                                        type="text"
+                                        style="padding:0;"
+                                        @click="viewLedger(entry)"
+                                    >{{ entry.ledger.name }}</el-button>
+                                </span>
+                            </div>
+
+                            <div style="border-bottom:solid 1px #eee;padding: 2px 0;">
+                                Account:
+                                <span style="float:right;">
+                                    <el-button
+                                        type="text"
+                                        style="padding:0;"
+                                        @click="viewAccount(entry)"
+                                    >{{ entry.ledger.account.name }}</el-button>
+                                </span>
+                            </div>
+
+                            <div style="border-bottom:solid 1px #eee;padding: 2px 0;">
+                                Amount:
+                                <span style="float:right;">{{ formatMoney(entry.amount) }}</span>
+                            </div>
+
+                            <div style="border-bottom:solid 1px #eee;padding: 2px 0;">
+                                Created At:
+                                <span style="float:right;">
+                                    {{ longLocalDate(entry.created_at) }}
+                                </span>
+                            </div>
+                        </div>
+                    </el-card>
+                </el-col>
+            </el-row>
+
+            <el-table v-else :data="entries" style="width: 100%">
                 <el-table-column label="Entry" width="220" prop="title" sortable>
                     <template slot-scope="scope">
                         <el-button type="text" @click="viewEntry(scope.row)">
@@ -50,7 +116,7 @@
                     </template>
                 </el-table-column>
 
-                <el-table-column width="200" label="Accounts" prop="ledger.account.name" sortable>
+                <el-table-column width="200" label="Account" prop="ledger.account.name" sortable>
                     <template slot-scope="scope">
                         <el-button type="text" @click="viewAccount(scope.row)">
                             <span class="el-icon-link"></span>
@@ -200,6 +266,7 @@
         components: { Pagination, Confirm, Error },
         data() {
             return {
+                display: 'card',
                 account: null,
                 search: null,
                 accounts: [],
@@ -207,7 +274,7 @@
                 entries: [],
                 pagination: {
                     total: 0,
-                    per_page: 8,
+                    per_page: 9,
                     current_page: 1
                 },
                 dialogVisible: false,

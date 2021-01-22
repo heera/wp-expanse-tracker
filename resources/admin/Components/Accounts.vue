@@ -12,7 +12,57 @@
         </div>
 
         <div class="content">
-            <el-table :data="accounts" style="width: 100%">
+            
+            <el-row :gutter="20" v-if="display=='card'">
+                <el-col :span="6" v-for="account in accounts" style="margin-bottom:10px;">
+                    <el-card class="box-card">
+                        <div slot="header" class="clearfix">
+                            <el-button type="text" @click="viewAccount(account)" style="padding:0;">
+                                {{ account.name }}
+                            </el-button>
+
+                            <el-button type="text" style="float:right; padding:0;">
+                                <el-button
+                                    type="primary"
+                                    size="mini"
+                                    icon="el-icon-edit"
+                                    @click="editAccount(account)"
+                                    style="margin-left: 0px;"
+                                />
+
+                                <confirm @yes="deleteAccount(account)">
+                                    <el-button
+                                        size="mini"
+                                        type="danger"
+                                        icon="el-icon-delete"
+                                        slot="reference"
+                                    />
+                                </confirm>
+                            </el-button>
+                        </div>
+                        <div>
+                            <div style="border-bottom:solid 1px #eee;padding: 2px 0;">
+                                Total Ledgers:
+                                <span style="float:right;">{{ account.ledgers.length }}</span>
+                            </div>
+
+                            <div style="border-bottom:solid 1px #eee;padding: 2px 0;">
+                                Total Expense:
+                                <span style="float:right;">{{ formatMoney(account.total) }}</span>
+                            </div>
+
+                            <div style="border-bottom:solid 1px #eee;padding: 2px 0;">
+                                Created At:
+                                <span style="float:right;">
+                                    {{ longLocalDate(account.created_at) }}
+                                </span>
+                            </div>
+                        </div>
+                    </el-card>
+                </el-col>
+            </el-row>
+
+            <el-table v-else :data="accounts" style="width: 100%">
                 <el-table-column label="Account" prop="name" sortable>
                     <template slot-scope="scope">
                         <el-button type="text" @click="viewAccount(scope.row)">
@@ -107,6 +157,7 @@
         components: { Pagination, Confirm, Error },
         data() {
             return {
+                display: 'card',
                 search: null,
                 accounts: [],
                 pagination: {

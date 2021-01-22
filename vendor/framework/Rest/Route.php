@@ -155,10 +155,10 @@ class Route
                 $regx = $this->wheres[$param];
             }
 
-            $pattern = "(?P<" . $param . ">" . $regx . ")";
+            $pattern = "/(?P<" . $param . ">" . $regx . ")";
 
             if ($isOptional) {
-                $pattern = "(?:/" . $pattern . ")?";
+                $pattern = "(?:" . $pattern . ")?";
             }
             
             return $pattern;

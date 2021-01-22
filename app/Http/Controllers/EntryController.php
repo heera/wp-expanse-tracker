@@ -23,10 +23,10 @@ class EntryController extends Controller
             $account = Account::with('ledgers')->find($account);
             if ($ledgerIds = $account->ledgers->lists('id')) {
                 $entryQuery->whereIn('ledger_id', $ledgerIds);
-                $entries = $entryQuery->paginate(8);
+                $entries = $entryQuery->paginate(9);
             }
         } else {
-            $entries = $entryQuery->paginate(8);
+            $entries = $entryQuery->paginate(9);
         }
 
         return [
