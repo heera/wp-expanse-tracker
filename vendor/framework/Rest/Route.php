@@ -8,9 +8,11 @@ class Route
 {
     protected $app = null;
 
-    protected $prefix = null;
+    protected $restNamespace = null;
 
     protected $uri = null;
+    
+    protected $name = '';
 
     protected $handler = null;
 
@@ -28,13 +30,21 @@ class Route
     ];
 
 
-    public function __construct($app, $prefix, $uri, $handler, $method)
+    public function __construct($app, $restNamespace, $uri, $handler, $method, $name = '')
     {
         $this->app = $app;
-        $this->prefix = $prefix;
+        $this->restNamespace = $restNamespace;
         $this->uri = $uri;
         $this->handler = $handler;
         $this->method = $method;
+        $this->name .= $name;
+    }
+
+    public function name($name)
+    {
+        $this->name .= $name;
+
+        return $this;
     }
 
     public function where($identifier, $value = null)
@@ -109,7 +119,7 @@ class Route
             'permission_callback' => [$this, 'permissionCallback']
         ];
 
-        return register_rest_route($this->prefix, "/{$uri}", $options);
+        return register_rest_route($this->restNamespace, "/{$uri}", $options);
     }
 
     protected function getValue($value)

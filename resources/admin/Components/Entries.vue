@@ -300,7 +300,7 @@
                     page: this.pagination.current_page
                 };
 
-                this.$get('entries', data).then(response => {
+                this.$get('accounts/ledgers/entries', data).then(response => {
                     this.entries = response.entries.data;
                     window.alphaAdmin.total = response.total;
                     this.pagination.total = response.entries.total;
@@ -309,9 +309,9 @@
                 });
             },
             save() {
-                let url = 'entries';
+                let url = 'accounts/ledgers/entries';
                 if (this.form.id) {
-                    url = `entries/${this.form.id}`;
+                    url = `${url}/${this.form.id}`;
                 }
 
                 this.saving = true;
@@ -326,7 +326,7 @@
                 });
             },
             deleteEntry(entry) {
-                const url = `entries/${entry.id}`;
+                const url = `accounts/ledgers/entries/${entry.id}`;
                 this.$del(url).then(response => {
                     this.fetch();
                     this.$success('Entry Deleted Successfully.');
@@ -404,7 +404,7 @@
                     this.form.ledger_id = null;
                 }
 
-                this.$get('ledgers', { account_id: accountId }).then(response => {
+                this.$get('accounts/ledgers', { account_id: accountId }).then(response => {
                     this.ledgers = response;
                 });
             }

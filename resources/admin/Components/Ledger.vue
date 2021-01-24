@@ -187,8 +187,11 @@
             };
         },
         methods: {
-            fetch(search) {
-                this.$get(`ledgers/${this.$route.query.id}`, { search }).then(response => {
+            fetch(search = '') {
+                this.$get(`accounts/ledgers/${this.$route.query.id}`, {
+                    search: search,
+                    page: this.pagination.current_page
+                }).then(response => {
                     this.ledger = response.ledger;
                     this.total = response.ledger.total;
                     this.entries = response.ledger.entries.data;
@@ -212,9 +215,9 @@
                 this.dialogVisible = true;  
             },
             save() {
-                let url = 'entries';
+                let url = 'accounts/ledgers/entries';
                 if (this.form.id) {
-                    url = `entries/${this.form.id}`;
+                    url = `${url}/${this.form.id}`;
                 }
 
                 this.saving = true;
@@ -238,19 +241,14 @@
                 });
             },
             deleteEntry(entry) {
-                const url = `entries/${entry.id}`;
+                const url = `accounts/ledgers/entries/${entry.id}`;
                 this.$del(url).then(response => {
                     this.fetch();
                     this.$success('Entry Deleted Successfully.');
                 });
             },
             pageChanged() {
-                this.$router.push({
-                    name: 'entries',
-                    query: {
-                        page: this.pagination.current_page
-                    }
-                });
+                this.fetch();
             },
             close() {
                 this.dialogVisible = false;

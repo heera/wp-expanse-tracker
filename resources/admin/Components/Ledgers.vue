@@ -210,7 +210,7 @@
                     page: this.pagination.current_page
                 };
 
-                this.$get('ledgers', data).then(response => {
+                this.$get('accounts/ledgers', data).then(response => {
                     this.accounts = response.accounts;
                     this.ledgers = response.ledgers.data;
                     window.alphaAdmin.total = response.total;
@@ -220,9 +220,9 @@
                 });
             },
             save() {
-                let url = 'ledgers';
+                let url = 'accounts/ledgers';
                 if (this.form.id) {
-                    url = `ledgers/${this.form.id}`;
+                    url = `${url}/${this.form.id}`;
                 }
 
                 this.saving = true;
@@ -237,7 +237,7 @@
                 });
             },
             deleteLedger(ledger) {
-                const url = `ledgers/${ledger.id}`;
+                const url = `accounts/ledgers/${ledger.id}`;
                 this.$del(url).then(response => {
                     this.fetch();
                     this.$success('Ledger Deleted Successfully.');
