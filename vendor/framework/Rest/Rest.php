@@ -17,6 +17,8 @@ class Rest
     protected $routeGroups = [];
     
     protected $groupStack = [];
+    
+    protected $policyHandler = null;
 
     public function __construct($app)
     {
@@ -52,9 +54,16 @@ class Rest
             $attributes['name'] = $name;
         }
 
-        call_user_func($callback, $this->app);
+        call_user_func($callback, $this);
         array_pop($this->prefix);
         array_pop($this->name);
+    }
+
+    public function withPolicy($handler)
+    {
+        $this->policyHandler = $handler;
+
+        return $this;
     }
 
     public function get($uri, $handler)
@@ -115,21 +124,6 @@ class Rest
     {
         $uri = trim($uri, '/');
 
-        // $options = debug_backtrace(false, 4)[3]['args'];
-
-        // if ($options && count($options) > 1) {
-        //     $options = $options[2];
-
-        //     if (isset($options['prefix'])) {
-        //         $prefix = $options['prefix'];
-        //         $uri = $prefix.'/'.$uri;
-        //     }
-
-        //     if (isset($options['policy'])) {
-        //         $policy = $options['policy'];
-        //     }
-        // }
-
         $prefix = array_map(function($prefix) {
             return trim($prefix, '/');
         }, $this->prefix);
@@ -147,8 +141,8 @@ class Rest
             implode('', $this->name)
         );
 
-        if (isset($policy)) {
-            $route->withPolicy($policy);
+        if ($this->policyHandler) {
+            $route->withPolicy($this->policyHandler);
         }
 
         return $route;
@@ -165,8 +159,6 @@ class Rest
 
     public function registerRoutes()
     {
-        // foreach ($this->routeGroups as $group) $group->register();
-
         foreach ($this->routes as $route) $route->register();
     }
 }

@@ -1,50 +1,50 @@
 <?php
 
 /**
- * @var $app Alpha\Framework\Foundation\Application
+ * @var $router Alpha\Framework\Rest\Rest
  */
 
-$app->rest->get('/reports', 'ReportController@index');
-$app->rest->get('/dashboard', 'DashboardController@index');
-$app->rest->get('/chart/data', 'DashboardController@getChartData');
+$router->get('/reports', 'ReportController@index');
+$router->get('/dashboard', 'DashboardController@index');
+$router->get('/chart/data', 'DashboardController@getChartData');
 
-$app->rest->prefix('accounts')->group(function($app) {
+$router->prefix('accounts')->group(function($router) {
 
-    $app->rest->get('/', 'AccountController@index');
+    $router->get('/', 'AccountController@index');
     
-    $app->rest->get('/{id}', 'AccountController@find')->int('id');
+    $router->get('/{id}', 'AccountController@find')->int('id');
 
-    $app->rest->post('/', 'AccountController@save');
+    $router->post('/', 'AccountController@save');
     
-    $app->rest->post('/{id}', 'AccountController@save')->int('id');
+    $router->post('/{id}', 'AccountController@save')->int('id');
     
-    $app->rest->delete('/{id}', 'AccountController@delete')->int('id');
+    $router->delete('/{id}', 'AccountController@delete')->int('id');
 
-    $app->rest->prefix('ledgers')->group(function($app) {
+    $router->prefix('ledgers')->group(function($router) {
 
-        $app->rest->get('/', 'LedgerController@index');
+        $router->get('/', 'LedgerController@index');
         
-        $app->rest->get('/{id}', 'LedgerController@find')->int('id');
+        $router->get('/{id}', 'LedgerController@find')->int('id');
 
-        $app->rest->post('/', 'LedgerController@save');
+        $router->post('/', 'LedgerController@save');
         
-        $app->rest->post('/{id}', 'LedgerController@save')->int('id');
+        $router->post('/{id}', 'LedgerController@save')->int('id');
         
-        $app->rest->delete('/{id}', 'LedgerController@delete')->int('id');
+        $router->delete('/{id}', 'LedgerController@delete')->int('id');
 
-        $app->rest->prefix('entries')->group(function($app) {
+        $router->prefix('entries')->group(function($router) {
 
-            $app->rest->get('/', 'EntryController@index');
+            $router->get('/', 'EntryController@index');
             
-            $app->rest->get('/account/{id}', 'EntryController@entriesByAccount');
+            $router->get('/account/{id}', 'EntryController@entriesByAccount');
 
-            $app->rest->get('/{id}', 'EntryController@find');
+            $router->get('/{id}', 'EntryController@find');
             
-            $app->rest->post('/', 'EntryController@save');
+            $router->post('/', 'EntryController@save');
 
-            $app->rest->post('/{id}', 'EntryController@save');
+            $router->post('/{id}', 'EntryController@save');
 
-            $app->rest->delete('/{id}', 'EntryController@delete');
+            $router->delete('/{id}', 'EntryController@delete');
         });
     });
 });

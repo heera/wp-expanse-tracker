@@ -5,6 +5,7 @@ namespace Alpha\App\Hooks\Handlers;
 class ExceptionHandler
 {
     protected $handlers = [
+        'InvalidArgumentException' => 'handleInvalidArgumentException',
         'Alpha\Framework\Foundation\ForbiddenException' => 'handleForbiddenException',
         'Alpha\Framework\Validator\ValidationException' => 'handleValidationException',
         'Alpha\Framework\Foundation\UnAuthorizedException' => 'handleUnAuthorizedException',
@@ -18,6 +19,13 @@ class ExceptionHandler
                 return $this->{$value}($e);
             }
         }
+    }
+
+    public function handleInvalidArgumentException($e)
+    {
+        wp_send_json_error([
+            'message' => $e->getMessage()
+        ], $e->getCode() ?: 422);
     }
 
     public function handleModelNotFoundException($e)

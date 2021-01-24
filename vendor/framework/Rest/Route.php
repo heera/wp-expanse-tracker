@@ -133,6 +133,12 @@ class Route
 
     protected function getPolicyHandler($policyHandler)
     {
+        if ($policyHandler instanceof \Closure) {
+            return function() use ($policyHandler) {
+                $policyHandler($this->app->request);
+            };
+        }
+
         if (strpos($policyHandler, '@') !== false) return $policyHandler;
 
         if (strpos($policyHandler, '::') !== false) return $policyHandler;
@@ -151,7 +157,9 @@ class Route
 
     protected function compileRoute($uri)
     {
-        return preg_replace_callback('/\/{(.*?)}/', function($match) {
+        $params = [];
+
+        $compiledUri = preg_replace_callback('/\/{(.*?)}/', function($match) use (&$params, $uri) {
             // Default regx
             $regx = '[^\s]+';
             
@@ -160,6 +168,14 @@ class Route
             if ($isOptional = strpos($param, '?')) {
                 $param = trim($param, '?');
             }
+
+            if (in_array($param, $params)) {
+                throw new \InvalidArgumentException(
+                    "Duplicate parameter name \"{$param}\" found in {$uri}."
+                );
+            }
+            
+            $params[] = $param;
 
             if (isset($this->wheres[$param])) {
                 $regx = $this->wheres[$param];
@@ -174,6 +190,8 @@ class Route
             return $pattern;
 
         }, $uri);
+
+        return $compiledUri;
     }
 
     public function callback(\WP_REST_Request $request)
