@@ -245,7 +245,7 @@
         },
         created() {
             this.dateRange = [
-                this.moment().subtract(1, 'months').format('YYYY-MM-DD'),
+                this.moment().subtract(30, 'days').format('YYYY-MM-DD'),
                 this.moment().format('YYYY-MM-DD')
             ];
 
