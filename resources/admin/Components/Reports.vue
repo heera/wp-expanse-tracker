@@ -15,6 +15,8 @@
                         start-placeholder="Start date"
                         end-placeholder="End date"
                         style="width: 100%;"
+                        :picker-options="pickerOptions"
+                        popper-class="reports-daterange"
                     ></el-date-picker>
                 </el-form-item>
 
@@ -133,7 +135,36 @@
                 },
                 errors: new Errors(),
                 fetching: false,
-                result: []
+                result: [],
+                pickerOptions: {
+                    shortcuts: [{
+                        text: 'Last week',
+                        onClick(picker) {
+                            const end = new Date();
+                            const start = new Date();
+                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+                            picker.$emit('pick', [start, end]);
+                        }
+                      },
+                      {
+                        text: 'Last month',
+                        onClick(picker) {
+                            const end = new Date();
+                            const start = new Date();
+                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+                            picker.$emit('pick', [start, end]);
+                        }
+                      },
+                      {
+                        text: 'Last 3 months',
+                        onClick(picker) {
+                            const end = new Date();
+                            const start = new Date();
+                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+                            picker.$emit('pick', [start, end]);
+                        }
+                      }]
+                }
             };
         },
         methods: {
@@ -225,8 +256,8 @@
                 this.fetch();
             } else {
                 this.form.date_range = [
-                    this.moment().subtract(1, 'months').format('YYYY-MM-DD'),
-                    this.moment().format('YYYY-MM-DD')
+                    this.moment().startOf('month').format('YYYY-MM-DD'),
+                    this.moment(new Date()).format('YYYY-MM-DD')
                 ];
             }
         }
@@ -236,5 +267,9 @@
 <style>
     .reports .el-table__footer-wrapper {
         font-weight: 600;
+    }
+
+    .reports-daterange .el-picker-panel__body-wrapper .el-picker-panel__sidebar {
+        width: 115px;
     }
 </style>

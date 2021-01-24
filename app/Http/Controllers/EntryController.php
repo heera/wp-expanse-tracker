@@ -12,7 +12,8 @@ class EntryController extends Controller
     public function index(Request $request)
     {
         $entries = [];
-
+        $totalByAccount = 0;
+        
         $entryQuery = Entry::with('ledger.account')->latest();
 
         if ($search = $request->search) {
@@ -24,14 +25,16 @@ class EntryController extends Controller
             if ($ledgerIds = $account->ledgers->lists('id')) {
                 $entryQuery->whereIn('ledger_id', $ledgerIds);
                 $entries = $entryQuery->paginate(9);
+                $totalByAccount = Entry::whereIn('ledger_id', $ledgerIds)->sum('amount');
             }
         } else {
             $entries = $entryQuery->paginate(9);
         }
 
         return [
-            'total' => Entry::sum('amount'),
             'entries' => $entries,
+            'total' => Entry::sum('amount'),
+            'total_by_account' => $totalByAccount,
             'first' => date('d-m-Y', strtotime(Entry::oldest()->limit(1)->first()->created_at)),
             'last' => date('d-m-Y', strtotime(Entry::latest()->limit(1)->first()->created_at))
         ];

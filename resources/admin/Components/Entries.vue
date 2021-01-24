@@ -12,14 +12,19 @@
                     Filter By Account
                     <span>({{ filteredAccount }})</span>
                     <i class="el-icon-arrow-down el-icon--right"></i>
+                    <span
+                        v-if="total_by_account"
+                        style="font-weight: 500; color: rgb(105, 115, 134); font-size: 13px;"
+                    >Total: {{ formatMoney(total_by_account) }}</span>
                 </span>
 
                 <el-dropdown-menu slot="dropdown">
                     <el-dropdown-item>All</el-dropdown-item>
                     <el-dropdown-item
-                        v-for="account in accounts"
+                        v-for="(account, index) in accounts"
                         :command="account.id"
                         :key="account.id"
+                        :divided="index==0"
                     >{{ account.name }}</el-dropdown-item>
                 </el-dropdown-menu>
             </el-dropdown>
@@ -289,7 +294,8 @@
                 form: { ...model },
                 saving: false,
                 errors: new Errors(),
-                dialogTitle: 'Create Entry'
+                dialogTitle: 'Create Entry',
+                total_by_account: 0
             };
         },
         methods: {
@@ -302,10 +308,14 @@
 
                 this.$get('accounts/ledgers/entries', data).then(response => {
                     this.entries = response.entries.data;
-                    window.alphaAdmin.total = response.total;
                     this.pagination.total = response.entries.total;
+                    window.alphaAdmin.total = response.total;
                     window.alphaAdmin.firstEntry = response.first;
                     window.alphaAdmin.lastEntry = response.last;
+
+                    if (this.account) {
+                        this.total_by_account = response.total_by_account;
+                    }
                 });
             },
             save() {
@@ -384,6 +394,7 @@
             filterByAccount(accountId) {
                 if (this.account === accountId) return;
                 this.account = accountId;
+                this.pagination.current_page = 1;
                 this.pageChanged();
             },
             fetchAccounts() {
