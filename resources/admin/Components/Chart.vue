@@ -23,6 +23,15 @@
                             }
                         }]
                     },
+                    tooltips: {
+                      enabled: true,
+                      callbacks: {
+                            label: ((tooltipItems, data) => {
+                              return 'Total: ' + this.formatMoney(tooltipItems.yLabel);
+                              // return this.chartLabel + "\n" + tooltipItems.yLabel;
+                            })
+                        }
+                    },
                     legend: {
                         display: true
                     },
