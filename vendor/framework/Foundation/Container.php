@@ -571,11 +571,39 @@ class Container implements ArrayAccess, ContainerContract
         if (array_key_exists($parameter->name, $parameters)) {
             $dependencies[] = $parameters[$parameter->name];
             unset($parameters[$parameter->name]);
-        } elseif ($parameter->getClass()) {
-            $dependencies[] = $this->make($parameter->getClass()->name);
+        } elseif ($this->getParameterType($parameter)) {
+            $dependencies[] = $this->make($this->getParameterName($parameter));
         } elseif ($parameter->isDefaultValueAvailable()) {
             $dependencies[] = $parameter->getDefaultValue();
         }
+    }
+
+    /**
+     * Get the parameter type for the given parameter.
+     *
+     * @return object ReflectionClass|ReflectionNamedType
+     */
+    protected function getParameterType($parameter)
+    {
+        if (method_exists($parameter, 'getType')) {
+            return $parameter->getType();
+        }
+
+        return $parameter->getClass();
+    }
+
+    /**
+     * Get the parameter name for the given parameter.
+     *
+     * @return string
+     */
+    protected function getParameterName($parameter)
+    {
+        if (method_exists($parameter, 'getType')) {
+            return $parameter->getType()->getName();
+        }
+
+        return $parameter->name;
     }
 
     /**

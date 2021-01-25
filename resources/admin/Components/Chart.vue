@@ -28,7 +28,6 @@
                       callbacks: {
                             label: ((tooltipItems, data) => {
                               return 'Total: ' + this.formatMoney(tooltipItems.yLabel);
-                              // return this.chartLabel + "\n" + tooltipItems.yLabel;
                             })
                         }
                     },
@@ -79,6 +78,15 @@
                             backgroundColor: '#409EFF',
                             data: this.chartData
                         }
+                        // ,{
+                        //     label: 'Commulative',
+                        //     borderColor: '#ccc',
+                        //     pointBackgroundColor: 'white',
+                        //     borderWidth: 1,
+                        //     pointBorderColor: '#249EBF',
+                        //     backgroundColor: '#FF9EAA',
+                        //     data: this.commulativeData
+                        // }
                     ]
                 }, this.options);
             }
@@ -91,6 +99,17 @@
                 set(value) {
                     this.legendTitle = value;
                 }
+            },
+            commulativeData() {
+                const commulativeData = [];
+
+                commulativeData[0] = this.chartData[0];
+
+                for (let i = 1, l = this.chartData.length; i < l; i++) {
+                    commulativeData[i] = commulativeData[(i - 1)] + this.chartData[i];
+                }
+
+                return commulativeData;
             },
             computedChartLabels() {
                 return this.chartLabels.map(l => {
