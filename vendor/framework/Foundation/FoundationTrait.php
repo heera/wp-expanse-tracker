@@ -32,7 +32,9 @@ trait FoundationTrait
                 $slug = $this->config->get('app.slug');
 
                 if (check_ajax_referer($slug, 'nonce', false)) {
-                    return $this->parseAjaxHandler($handler)();
+                    return call_user_func(
+                        $this->parseAjaxHandler($handler)
+                    );
                 }
 
                 throw new ForbiddenException('Forbidden!', 401);

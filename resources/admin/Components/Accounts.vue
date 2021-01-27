@@ -14,7 +14,12 @@
         <div class="content">
             
             <el-row :gutter="20" v-if="display=='card'">
-                <el-col :span="6" v-for="account in accounts" style="margin-bottom:10px;">
+                <el-col
+                    :span="6"
+                    v-for="account in accounts"
+                    :key="account.id"
+                    style="margin-bottom:10px;"
+                >
                     <el-card class="box-card">
                         <div slot="header" class="clearfix">
                             <el-button type="text" @click="viewAccount(account)" style="padding:0;">

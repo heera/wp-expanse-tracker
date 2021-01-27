@@ -13,7 +13,12 @@
 
         <div class="content">
             <el-row :gutter="20" v-if="display=='card'">
-                <el-col :span="6" v-for="ledger in ledgers" style="margin-bottom:10px;">
+                <el-col
+                    :span="6"
+                    v-for="ledger in ledgers"
+                    :key="ledger.id"
+                    style="margin-bottom:10px;"
+                >
                     <el-card class="box-card">
                         <div slot="header" class="clearfix">
                             <el-button type="text" @click="viewLedger(ledger)" style="padding:0;">

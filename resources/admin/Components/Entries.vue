@@ -39,7 +39,12 @@
 
         <div class="content">
             <el-row :gutter="20" v-if="display=='card'">
-                <el-col :span="8" v-for="entry in entries" style="margin-bottom:10px;">
+                <el-col
+                    :span="8"
+                    v-for="entry in entries"
+                    :key="entry.id"
+                    style="margin-bottom:10px;"
+                >
                     <el-card class="box-card">
                         <div slot="header" class="clearfix">
                             <el-button type="text" @click="viewEntry(entry)" style="padding:0;">
