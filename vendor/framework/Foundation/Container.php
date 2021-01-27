@@ -599,11 +599,7 @@ class Container implements ArrayAccess, ContainerContract
      */
     protected function getParameterName($parameter)
     {
-        if (method_exists($parameter, 'getType')) {
-            return $parameter->getType()->getName();
-        }
-
-        return $parameter->name;
+        return $this->getParameterType($parameter)->getName();
     }
 
     /**
@@ -808,9 +804,17 @@ class Container implements ArrayAccess, ContainerContract
     protected function getDependencies($parameters, array $primitives = [])
     {
         $dependencies = [];
+        
+        $types = ['bool', 'int', 'float', 'string', 'array', 'resource'];
 
         foreach ($parameters as $parameter) {
-            $dependency = $parameter->getClass();
+            
+            if ($dependency = $this->getParameterType($parameter)) {
+                $dependency = $dependency->getName();
+                if ($dependency && in_array($dependency, $types)) {
+                    $dependency = null;
+                }
+            }
 
             // If the class is null, it means the dependency is a string or some other
             // primitive type which we can not resolve since it is not a class and
@@ -857,7 +861,7 @@ class Container implements ArrayAccess, ContainerContract
     protected function resolveClass(ReflectionParameter $parameter)
     {
         try {
-            return $this->make($parameter->getClass()->name);
+            return $this->make($this->getParameterName($parameter));
         } catch (BindingResolutionException $e) {
             if ($parameter->isOptional()) {
                 return $parameter->getDefaultValue();
@@ -1218,3 +1222,4 @@ class Container implements ArrayAccess, ContainerContract
         $this[$key] = $value;
     }
 }
+
