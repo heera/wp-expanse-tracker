@@ -3,7 +3,7 @@
 
     export default {
         extends: Bar,
-        props: ['chartLabels', 'chartData'],
+        props: ['chartLabels', 'chartData', 'dateRange'],
         data() {
             return {
                 legendTitle: 'Expense',
@@ -94,7 +94,11 @@
         computed: {
             chartLabel: {
                 get() {
-                    return 'Total Expense: ' + this.formatMoney(this.legendTitle);
+                    const total = this.formatMoney(this.legendTitle);
+                    const from = this.dateRange[0].split('-').reverse().join('-');
+                    const to = this.dateRange[1].split('-').reverse().join('-');
+
+                    return 'Total Expense: ' + total + ' ( ' + from + ' - ' + to + ' )';
                 },
                 set(value) {
                     this.legendTitle = value;

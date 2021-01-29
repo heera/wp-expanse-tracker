@@ -121,6 +121,7 @@
                     <div class="content">
                         <chart
                             :height="300"
+                            :dateRange="dateRange"
                             :chartData="chartData.datasets"
                             :chartLabels="chartData.labels"
                         />
