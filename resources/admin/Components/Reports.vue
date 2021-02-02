@@ -238,7 +238,7 @@
                     this.form.ledger_id = null;
                 }
 
-                this.$get('ledgers', { account_id: accountId }).then(response => {
+                this.$get('accounts/ledgers', { account_id: accountId }).then(response => {
                     this.ledgers = response;
                 });
             }
