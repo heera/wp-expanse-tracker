@@ -24,11 +24,11 @@
                         }]
                     },
                     tooltips: {
-                      enabled: true,
-                      callbacks: {
-                            label: ((tooltipItems, data) => {
-                              return 'Total: ' + this.formatMoney(tooltipItems.yLabel);
-                            })
+                        enabled: true,
+                        callbacks: {
+                            label: (tooltipItems, data) => {
+                                return 'Total: ' + this.formatMoney(tooltipItems.yLabel);
+                            }
                         }
                     },
                     legend: {
