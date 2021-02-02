@@ -2,122 +2,153 @@
 
 namespace Alpha\Framework\Rest;
 
+use Alpha\Framework\Support\Arr;
+
 class Rest
 {
     protected $app = null;
+    
+    protected $name = [];
+    
+    protected $prefix = [];
 
     protected $routes = [];
 
     protected $routeGroups = [];
+    
+    protected $groupStack = [];
+    
+    protected $policyHandler = null;
 
     public function __construct($app)
     {
         $this->app = $app;
     }
 
-    public function group($options = [], \Closure $callback = null)
+    public function prefix($prefix)
     {
-        if ($options instanceof \Closure) {
-            $callback = $options;
-            $options = [];
+        $this->prefix[] = $prefix;
+
+        return $this;
+    }
+
+    public function name($name)
+    {
+        $this->name[] = $name;
+
+        return $this;
+    }
+
+    public function group($attributes = [], \Closure $callback = null)
+    {
+        if ($attributes instanceof \Closure) {
+            $callback = $attributes;
+            $attributes = [];
         }
 
-        $this->routeGroups[] = $group = new Group(
-            $this->app, $options, $callback
-        );
-
-        return $group;
-    }
-
-    public function get($path, $handler)
-    {
-        $this->routes[] = $route = $this->newRoute(
-            $path, $handler, \WP_REST_Server::READABLE
-        );
-
-        return $route;
-    }
-
-    public function post($path, $handler)
-    {
-        $this->routes[] = $route = $this->newRoute(
-            $path, $handler, \WP_REST_Server::CREATABLE
-        );
-
-        return $route;
-    }
-
-    public function put($path, $handler)
-    {
-        $this->routes[] = $route = $this->newRoute(
-            $path, $handler, \WP_REST_Server::EDITABLE
-        );
-
-        return $route;
-    }
-
-    public function patch($path, $handler)
-    {
-        $this->routes[] = $route = $this->newRoute(
-            $path, $handler, \WP_REST_Server::EDITABLE
-        );
-
-        return $route;
-    }
-
-    public function delete($path, $handler)
-    {
-        $this->routes[] = $route = $this->newRoute(
-            $path, $handler, \WP_REST_Server::DELETABLE
-        );
-
-        return $route;
-    }
-
-    public function any($path, $handler)
-    {
-        $this->routes[] = $route = $this->newRoute(
-            $path, $handler, \WP_REST_Server::ALLMETHODS
-        );
-
-        return $route;
-    }
-
-    protected function newRoute($path, $handler, $method)
-    {
-        $path = trim($path, '/');
-
-        $options = debug_backtrace(false, 4)[3]['args'];
-
-        if ($options && count($options) > 1) {
-            $options = $options[2];
-
-            if (isset($options['prefix'])) {
-                $prefix = $options['prefix'];
-                $path = $prefix.'/'.$path;
-            }
-
-            if (isset($options['policy'])) {
-                $policy = $options['policy'];
-            }
+        if ($prefix = $this->prefix) {
+            $attributes['prefix'] = $prefix;
         }
+
+        if ($name = $this->name) {
+            $attributes['name'] = $name;
+        }
+
+        call_user_func($callback, $this);
+        array_pop($this->prefix);
+        array_pop($this->name);
+    }
+
+    public function withPolicy($handler)
+    {
+        $this->policyHandler = $handler;
+
+        return $this;
+    }
+
+    public function get($uri, $handler)
+    {
+        $this->routes[] = $route = $this->newRoute(
+            $uri, $handler, \WP_REST_Server::READABLE
+        );
+
+        return $route;
+    }
+
+    public function post($uri, $handler)
+    {
+        $this->routes[] = $route = $this->newRoute(
+            $uri, $handler, \WP_REST_Server::CREATABLE
+        );
+
+        return $route;
+    }
+
+    public function put($uri, $handler)
+    {
+        $this->routes[] = $route = $this->newRoute(
+            $uri, $handler, \WP_REST_Server::EDITABLE
+        );
+
+        return $route;
+    }
+
+    public function patch($uri, $handler)
+    {
+        $this->routes[] = $route = $this->newRoute(
+            $uri, $handler, \WP_REST_Server::EDITABLE
+        );
+
+        return $route;
+    }
+
+    public function delete($uri, $handler)
+    {
+        $this->routes[] = $route = $this->newRoute(
+            $uri, $handler, \WP_REST_Server::DELETABLE
+        );
+
+        return $route;
+    }
+
+    public function any($uri, $handler)
+    {
+        $this->routes[] = $route = $this->newRoute(
+            $uri, $handler, \WP_REST_Server::ALLMETHODS
+        );
+
+        return $route;
+    }
+
+    protected function newRoute($uri, $handler, $method)
+    {
+        $uri = trim($uri, '/');
+
+        $prefix = array_map(function($prefix) {
+            return trim($prefix, '/');
+        }, $this->prefix);
+
+        $prefix = implode('/', $prefix);
+
+        $prefix = trim($prefix, '/') . '/' . trim($uri, '/');
 
         $route = new Route(
             $this->app,
-            $this->getPrefix(),
-            $path,
+            $this->getRestNamespace(),
+            $prefix,
             $handler,
-            $method
+            $method,
+            implode('', $this->name)
         );
 
-        if (isset($policy)) {
-            $route->withPolicy($policy);
+        if ($this->policyHandler) {
+            $route->withPolicy($this->policyHandler);
         }
 
         return $route;
     }
 
-    protected function getPrefix()
+    protected function getRestNamespace()
     {
         $version = $this->app->config->get('app.rest_version');
 
@@ -128,8 +159,6 @@ class Rest
 
     public function registerRoutes()
     {
-        foreach ($this->routeGroups as $group) $group->register();
-
         foreach ($this->routes as $route) $route->register();
     }
 }

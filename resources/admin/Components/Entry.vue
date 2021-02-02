@@ -65,7 +65,7 @@
         },
         methods: {
             fetch() {
-                this.$get(`entries/${this.$route.query.id}`).then(response => {
+                this.$get(`accounts/ledgers/entries/${this.$route.query.id}`).then(response => {
                     this.entry = response.entry;
                     window.alphaAdmin.total = response.total;
                     window.alphaAdmin.firstEntry = response.first;

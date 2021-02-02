@@ -12,7 +12,73 @@
         </div>
 
         <div class="content">
+            <el-row :gutter="20" v-if="display=='card'">
+                <el-col
+                    :span="6"
+                    v-for="ledger in ledgers"
+                    :key="ledger.id"
+                    style="margin-bottom:10px;"
+                >
+                    <el-card class="box-card">
+                        <div slot="header" class="clearfix">
+                            <el-button type="text" @click="viewLedger(ledger)" style="padding:0;">
+                                {{ ledger.name }}
+                            </el-button>
+
+                            <el-button type="text" style="float:right; padding:0;">
+                                <el-button
+                                    type="primary"
+                                    size="mini"
+                                    icon="el-icon-edit"
+                                    @click="editLedger(ledger)"
+                                    style="margin-left: 0px;"
+                                />
+
+                                <confirm @yes="deleteLedger(ledger)">
+                                    <el-button
+                                        size="mini"
+                                        type="danger"
+                                        icon="el-icon-delete"
+                                        slot="reference"
+                                    />
+                                </confirm>
+                            </el-button>
+                        </div>
+                        <div>
+                            <!-- <div style="border-bottom:solid 1px #eee;padding: 2px 0;">
+                                Total Entries:
+                                <span style="float:right;">{{ ledger.entries.length }}</span>
+                            </div> -->
+
+                            <div style="border-bottom:solid 1px #eee;padding: 2px 0;">
+                                Account:
+                                <span style="float:right;">
+                                    <el-button
+                                        type="text"
+                                        style="padding:0;"
+                                        @click="viewAccount(ledger.account)"
+                                    >{{ ledger.account.name }}</el-button>
+                                </span>
+                            </div>
+
+                            <div style="border-bottom:solid 1px #eee;padding: 2px 0;">
+                                Total Expense:
+                                <span style="float:right;">{{ formatMoney(ledger.total) }}</span>
+                            </div>
+
+                            <div style="border-bottom:solid 1px #eee;padding: 2px 0;">
+                                Created At:
+                                <span style="float:right;">
+                                    {{ longLocalDate(ledger.created_at) }}
+                                </span>
+                            </div>
+                        </div>
+                    </el-card>
+                </el-col>
+            </el-row>
+
             <el-table
+                v-else
                 :data="ledgers"
                 style="width: 100%"
             >
@@ -125,6 +191,7 @@
         components: { Pagination, Confirm, Error },
         data() {
             return {
+                display: 'card',
                 search: null,
                 accounts: [],
                 ledgers: [],
@@ -148,7 +215,7 @@
                     page: this.pagination.current_page
                 };
 
-                this.$get('ledgers', data).then(response => {
+                this.$get('accounts/ledgers', data).then(response => {
                     this.accounts = response.accounts;
                     this.ledgers = response.ledgers.data;
                     window.alphaAdmin.total = response.total;
@@ -158,9 +225,9 @@
                 });
             },
             save() {
-                let url = 'ledgers';
+                let url = 'accounts/ledgers';
                 if (this.form.id) {
-                    url = `ledgers/${this.form.id}`;
+                    url = `${url}/${this.form.id}`;
                 }
 
                 this.saving = true;
@@ -175,7 +242,7 @@
                 });
             },
             deleteLedger(ledger) {
-                const url = `ledgers/${ledger.id}`;
+                const url = `accounts/ledgers/${ledger.id}`;
                 this.$del(url).then(response => {
                     this.fetch();
                     this.$success('Ledger Deleted Successfully.');

@@ -8,9 +8,11 @@ class Route
 {
     protected $app = null;
 
-    protected $prefix = null;
+    protected $restNamespace = null;
 
     protected $uri = null;
+    
+    protected $name = '';
 
     protected $handler = null;
 
@@ -28,13 +30,21 @@ class Route
     ];
 
 
-    public function __construct($app, $prefix, $uri, $handler, $method)
+    public function __construct($app, $restNamespace, $uri, $handler, $method, $name = '')
     {
         $this->app = $app;
-        $this->prefix = $prefix;
+        $this->restNamespace = $restNamespace;
         $this->uri = $uri;
         $this->handler = $handler;
         $this->method = $method;
+        $this->name .= $name;
+    }
+
+    public function name($name)
+    {
+        $this->name .= $name;
+
+        return $this;
     }
 
     public function where($identifier, $value = null)
@@ -109,7 +119,7 @@ class Route
             'permission_callback' => [$this, 'permissionCallback']
         ];
 
-        return register_rest_route($this->prefix, "/{$uri}", $options);
+        return register_rest_route($this->restNamespace, "/{$uri}", $options);
     }
 
     protected function getValue($value)
@@ -123,6 +133,12 @@ class Route
 
     protected function getPolicyHandler($policyHandler)
     {
+        if ($policyHandler instanceof \Closure) {
+            return function() use ($policyHandler) {
+                $policyHandler($this->app->request);
+            };
+        }
+
         if (strpos($policyHandler, '@') !== false) return $policyHandler;
 
         if (strpos($policyHandler, '::') !== false) return $policyHandler;
@@ -141,7 +157,9 @@ class Route
 
     protected function compileRoute($uri)
     {
-        return preg_replace_callback('/\/{(.*?)}/', function($match) {
+        $params = [];
+
+        $compiledUri = preg_replace_callback('/\/{(.*?)}/', function($match) use (&$params, $uri) {
             // Default regx
             $regx = '[^\s]+';
             
@@ -151,19 +169,29 @@ class Route
                 $param = trim($param, '?');
             }
 
+            if (in_array($param, $params)) {
+                throw new \InvalidArgumentException(
+                    "Duplicate parameter name \"{$param}\" found in {$uri}."
+                );
+            }
+            
+            $params[] = $param;
+
             if (isset($this->wheres[$param])) {
                 $regx = $this->wheres[$param];
             }
 
-            $pattern = "(?P<" . $param . ">" . $regx . ")";
+            $pattern = "/(?P<" . $param . ">" . $regx . ")";
 
             if ($isOptional) {
-                $pattern = "(?:/" . $pattern . ")?";
+                $pattern = "(?:" . $pattern . ")?";
             }
             
             return $pattern;
 
         }, $uri);
+
+        return $compiledUri;
     }
 
     public function callback(\WP_REST_Request $request)

@@ -171,10 +171,13 @@
         },
         methods: {
             fetch(search = '') {
-                this.$get(`accounts/${this.$route.query.id}`, { search }).then(response => {
+                this.$get(`accounts/${this.$route.query.id}`, {
+                    search: search,
+                    page: this.pagination.current_page
+                }).then(response => {
                     this.account = response.account;
                     this.total = response.account.total;
-                    this.pagination.total = response.ledgers.total;
+                    this.pagination.total = response.account.ledgers.total;
                     window.alphaAdmin.firstEntry = response.first;
                     window.alphaAdmin.lastEntry = response.last;
                 });
@@ -191,9 +194,9 @@
                 this.dialogVisible = true;  
             },
             save() {
-                let url = 'ledgers';
+                let url = 'accounts/ledgers';
                 if (this.form.id) {
-                    url = `ledgers/${this.form.id}`;
+                    url = `${url}/${this.form.id}`;
                 }
 
                 this.saving = true;
@@ -217,19 +220,14 @@
                 });
             },
             deleteLedger(ledger) {
-                const url = `ledgers/${ledger.id}`;
+                const url = `accounts/ledgers/${ledger.id}`;
                 this.$del(url).then(response => {
                     this.fetch();
                     this.$success('Ledger Deleted Successfully.');
                 });
             },
             pageChanged() {
-                this.$router.push({
-                    name: 'ledgers',
-                    query: {
-                        page: this.pagination.current_page
-                    }
-                });
+                this.fetch();
             },
             close() {
                 this.dialogVisible = false;

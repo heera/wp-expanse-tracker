@@ -121,6 +121,7 @@
                     <div class="content">
                         <chart
                             :height="300"
+                            :dateRange="dateRange"
                             :chartData="chartData.datasets"
                             :chartLabels="chartData.labels"
                         />
@@ -245,7 +246,7 @@
         },
         created() {
             this.dateRange = [
-                this.moment().subtract(1, 'months').format('YYYY-MM-DD'),
+                this.moment().subtract(30, 'days').format('YYYY-MM-DD'),
                 this.moment().format('YYYY-MM-DD')
             ];
 

@@ -12,14 +12,19 @@
                     Filter By Account
                     <span>({{ filteredAccount }})</span>
                     <i class="el-icon-arrow-down el-icon--right"></i>
+                    <span
+                        v-if="total_by_account"
+                        style="font-weight: 500; color: rgb(105, 115, 134); font-size: 13px;"
+                    >Total: {{ formatMoney(total_by_account) }}</span>
                 </span>
 
                 <el-dropdown-menu slot="dropdown">
                     <el-dropdown-item>All</el-dropdown-item>
                     <el-dropdown-item
-                        v-for="account in accounts"
+                        v-for="(account, index) in accounts"
                         :command="account.id"
                         :key="account.id"
+                        :divided="index==0"
                     >{{ account.name }}</el-dropdown-item>
                 </el-dropdown-menu>
             </el-dropdown>
@@ -33,7 +38,85 @@
         </div>
 
         <div class="content">
-            <el-table :data="entries" style="width: 100%">
+            <el-row :gutter="20" v-if="display=='card'">
+                <el-col
+                    :span="8"
+                    v-for="entry in entries"
+                    :key="entry.id"
+                    style="margin-bottom:10px;"
+                >
+                    <el-card class="box-card">
+                        <div slot="header" class="clearfix">
+                            <el-button type="text" @click="viewEntry(entry)" style="padding:0;">
+                                {{ entry.title }}
+                            </el-button>
+
+                            <el-button type="text" style="float:right; padding:0;">
+                                <el-button
+                                    type="primary"
+                                    size="mini"
+                                    icon="el-icon-edit"
+                                    @click="editEntry(entry)"
+                                    style="margin-left: 0px;"
+                                />
+
+                                <confirm @yes="deleteEntry(entry)">
+                                    <el-button
+                                        size="mini"
+                                        type="danger"
+                                        icon="el-icon-delete"
+                                        slot="reference"
+                                    />
+                                </confirm>
+                            </el-button>
+                        </div>
+                        <div>
+                            <div style="border-bottom:solid 1px #eee;padding: 2px 0;">
+                                Ledger:
+                                <span style="float:right;">
+                                    <el-button
+                                        type="text"
+                                        style="padding:0;"
+                                        @click="viewLedger(entry)"
+                                    >{{ entry.ledger.name }}</el-button>
+                                </span>
+                            </div>
+
+                            <div style="border-bottom:solid 1px #eee;padding: 2px 0;">
+                                Account:
+                                <span style="float:right;">
+                                    <el-button
+                                        type="text"
+                                        style="padding:0;"
+                                        @click="viewAccount(entry)"
+                                    >{{ entry.ledger.account.name }}</el-button>
+                                </span>
+                            </div>
+
+                            <div style="border-bottom:solid 1px #eee;padding: 2px 0;">
+                                Amount:
+                                <span style="float:right;">{{ formatMoney(entry.amount) }}</span>
+                            </div>
+
+                            <div style="border-bottom:solid 1px #eee;padding: 2px 0;">
+                                Created At:
+                                <span style="float:right;">
+                                    {{ longLocalDate(entry.created_at) }}
+                                </span>
+                            </div>
+
+                            <div style="border-bottom:solid 1px #eee;padding: 2px 0;">
+                                Updated At:
+                                <span style="float:right;">
+                                    {{ longLocalDate(entry.updated_at) }}
+                                </span>
+                            </div>
+                        </div>
+                    </el-card>
+                </el-col>
+            </el-row>
+
+            <el-table v-else :data="entries" style="width: 100%">
                 <el-table-column label="Entry" width="220" prop="title" sortable>
                     <template slot-scope="scope">
                         <el-button type="text" @click="viewEntry(scope.row)">
@@ -50,7 +133,7 @@
                     </template>
                 </el-table-column>
 
-                <el-table-column width="200" label="Accounts" prop="ledger.account.name" sortable>
+                <el-table-column width="200" label="Account" prop="ledger.account.name" sortable>
                     <template slot-scope="scope">
                         <el-button type="text" @click="viewAccount(scope.row)">
                             <span class="el-icon-link"></span>
@@ -200,6 +283,7 @@
         components: { Pagination, Confirm, Error },
         data() {
             return {
+                display: 'card',
                 account: null,
                 search: null,
                 accounts: [],
@@ -207,7 +291,7 @@
                 entries: [],
                 pagination: {
                     total: 0,
-                    per_page: 8,
+                    per_page: 9,
                     current_page: 1
                 },
                 dialogVisible: false,
@@ -215,7 +299,8 @@
                 form: { ...model },
                 saving: false,
                 errors: new Errors(),
-                dialogTitle: 'Create Entry'
+                dialogTitle: 'Create Entry',
+                total_by_account: 0
             };
         },
         methods: {
@@ -226,18 +311,22 @@
                     page: this.pagination.current_page
                 };
 
-                this.$get('entries', data).then(response => {
+                this.$get('accounts/ledgers/entries', data).then(response => {
                     this.entries = response.entries.data;
-                    window.alphaAdmin.total = response.total;
                     this.pagination.total = response.entries.total;
+                    window.alphaAdmin.total = response.total;
                     window.alphaAdmin.firstEntry = response.first;
                     window.alphaAdmin.lastEntry = response.last;
+
+                    if (this.account) {
+                        this.total_by_account = response.total_by_account;
+                    }
                 });
             },
             save() {
-                let url = 'entries';
+                let url = 'accounts/ledgers/entries';
                 if (this.form.id) {
-                    url = `entries/${this.form.id}`;
+                    url = `${url}/${this.form.id}`;
                 }
 
                 this.saving = true;
@@ -252,7 +341,7 @@
                 });
             },
             deleteEntry(entry) {
-                const url = `entries/${entry.id}`;
+                const url = `accounts/ledgers/entries/${entry.id}`;
                 this.$del(url).then(response => {
                     this.fetch();
                     this.$success('Entry Deleted Successfully.');
@@ -310,6 +399,7 @@
             filterByAccount(accountId) {
                 if (this.account === accountId) return;
                 this.account = accountId;
+                this.pagination.current_page = 1;
                 this.pageChanged();
             },
             fetchAccounts() {
@@ -330,7 +420,7 @@
                     this.form.ledger_id = null;
                 }
 
-                this.$get('ledgers', { account_id: accountId }).then(response => {
+                this.$get('accounts/ledgers', { account_id: accountId }).then(response => {
                     this.ledgers = response;
                 });
             }

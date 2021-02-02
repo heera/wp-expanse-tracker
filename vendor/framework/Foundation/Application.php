@@ -132,8 +132,13 @@ class Application extends Container
         }
 
         $this->addAction('rest_api_init', function($wpRestServer) use ($app) {
-            require_once $this->basePath . 'app/Http/Routes/rest.php';
-            $app->rest->registerRoutes();
+            try {
+                $router = $app->rest;
+                require_once $this->basePath . 'app/Http/Routes/rest.php';
+                $router->registerRoutes();
+            } catch (\InvalidArgumentException $e) {
+                $app->doCustomAction('handle_exception', $e);
+            }
         });
     }
 }

@@ -25,6 +25,7 @@
             page_sizes() {
                 return [
                     8,
+                    9,
                     10,
                     20,
                     50,
