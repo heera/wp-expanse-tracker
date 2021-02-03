@@ -8,9 +8,9 @@ $router->get('/reports', 'ReportController@index');
 $router->get('/dashboard', 'DashboardController@index');
 $router->get('/chart/data', 'DashboardController@getChartData');
 
-$router->prefix('accounts')->group(function($router) {
+$router->prefix('accounts')->name('accounts.')->group(function($router) {
 
-    $router->get('/', 'AccountController@index');
+    $router->get('/', 'AccountController@index')->name('index');
     
     $router->get('/{id}', 'AccountController@find')->int('id');
 

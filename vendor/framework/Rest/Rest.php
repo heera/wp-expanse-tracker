@@ -122,20 +122,10 @@ class Rest
 
     protected function newRoute($uri, $handler, $method)
     {
-        $uri = trim($uri, '/');
-
-        $prefix = array_map(function($prefix) {
-            return trim($prefix, '/');
-        }, $this->prefix);
-
-        $prefix = implode('/', $prefix);
-
-        $prefix = trim($prefix, '/') . '/' . trim($uri, '/');
-
-        $route = new Route(
+        $route = Route::create(
             $this->app,
             $this->getRestNamespace(),
-            $prefix,
+            $this->buildUriWithPrefix($uri),
             $handler,
             $method,
             implode('', $this->name)
@@ -157,8 +147,26 @@ class Rest
         return "{$namespace}/{$version}";
     }
 
+    protected function buildUriWithPrefix($uri)
+    {
+        $uri = trim($uri, '/');
+
+        $prefix = array_map(function($prefix) {
+            return trim($prefix, '/');
+        }, $this->prefix);
+
+        $prefix = implode('/', $prefix);
+
+        return trim($prefix, '/') . '/' . trim($uri, '/');
+    }
+
     public function registerRoutes()
     {
         foreach ($this->routes as $route) $route->register();
+    }
+
+    public function getRoutes()
+    {
+        return $this->routes;
     }
 }

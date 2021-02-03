@@ -12,6 +12,8 @@ class Route
 
     protected $uri = null;
     
+    protected $compiled = null;
+    
     protected $name = '';
 
     protected $handler = null;
@@ -37,7 +39,12 @@ class Route
         $this->uri = $uri;
         $this->handler = $handler;
         $this->method = $method;
-        $this->name .= $name;
+        $this->name = $name;
+    }
+
+    public static function create($app, $namespace, $uri, $handler, $method, $name)
+    {
+        return new static($app, $namespace, $uri, $handler, $method, $name);
     }
 
     public function name($name)
@@ -191,7 +198,7 @@ class Route
 
         }, $uri);
 
-        return $compiledUri;
+        return $this->compiled = $compiledUri;
     }
 
     public function callback(\WP_REST_Request $request)

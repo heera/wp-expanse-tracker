@@ -49,6 +49,7 @@ class Menu
             'slug'  => $slug = $app->config->get('app.slug'),
             'nonce' => wp_create_nonce($slug),
             'rest'  => $this->getRestInfo($app),
+            // 'routes'  => $this->getRoutes($app),
             'brand_logo' => $this->getMenuIcon(),
             'total' => $this->getTotalExpense(),
             'firstEntry' => '',
@@ -88,6 +89,24 @@ class Menu
             'version'   => $v,
         ];
     }
+
+    // protected function getRoutes($app)
+    // {
+    //     $request = new \WP_REST_Request('GET', '/alpha/v2');
+    //     $response = rest_do_request( $request );
+    //     $server = rest_get_server();
+    //     $data = $server->response_to_data($response, false);
+
+    //     $routes= [];
+        
+    //     foreach ($data['routes'] as $route) {
+    //         if (isset($route['_links'])) {
+    //             $routes[$route['_links']['self'][0]['href']] = $route['methods'];
+    //         }
+    //     }
+
+    //     return $routes;
+    // }
 
     protected function getMenuIcon()
     {
