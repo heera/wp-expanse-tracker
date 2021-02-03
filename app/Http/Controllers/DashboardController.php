@@ -14,6 +14,7 @@ class DashboardController extends Controller
 
     public function index(Request $request)
     {
+        // dd($this->app->rest->getRoutes());
         return [
             'total' => Entry::sum('amount'),
             'accounts' => Account::with('ledgers.entries')->latest('updated_at')->Paginate(3),
