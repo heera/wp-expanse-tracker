@@ -142,7 +142,7 @@ class Rest
     {
         $version = $this->app->config->get('app.rest_version');
 
-        $namespace = $this->app->config->get('app.rest_namespace');
+        $namespace = trim($this->app->config->get('app.rest_namespace'), '/');
 
         return "{$namespace}/{$version}";
     }
