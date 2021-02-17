@@ -19,6 +19,8 @@ class Route
     protected $handler = null;
 
     protected $method = null;
+    
+    protected $options = [];
 
     protected $wheres = [];
 
@@ -118,15 +120,21 @@ class Route
 
     public function register()
     {
+        $this->setOptions();
+
         $uri = $this->compileRoute($this->uri);
 
-        $options = [
+        return register_rest_route($this->restNamespace, "/{$uri}", $this->options);
+    }
+
+    protected function setOptions()
+    {
+        $this->options = [
+            'args' => [],
             'methods' => $this->method,
             'callback' => [$this, 'callback'],
             'permission_callback' => [$this, 'permissionCallback']
         ];
-
-        return register_rest_route($this->restNamespace, "/{$uri}", $options);
     }
 
     protected function getValue($value)
@@ -193,6 +201,8 @@ class Route
             if ($isOptional) {
                 $pattern = "(?:" . $pattern . ")?";
             }
+            
+            $this->options['args'][$param]['required'] = !$isOptional;
             
             return $pattern;
 
