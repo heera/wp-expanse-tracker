@@ -46,12 +46,12 @@ class Rest
             $attributes = [];
         }
 
-        if ($prefix = $this->prefix) {
-            $attributes['prefix'] = $prefix;
+        if (isset($attributes['name'])) {
+            $this->name($attributes['name']);
         }
 
-        if ($name = $this->name) {
-            $attributes['name'] = $name;
+        if (isset($attributes['prefix'])) {
+            $this->prefix($attributes['prefix']);
         }
 
         call_user_func($callback, $this);

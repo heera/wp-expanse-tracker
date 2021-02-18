@@ -535,8 +535,12 @@ class Container implements ArrayAccess, ContainerContract
         foreach ($this->getCallReflector($callback)->getParameters() as $key => $parameter) {
             $this->addDependencyForCallParameter($parameter, $parameters, $dependencies);
         }
-
-        return array_merge($dependencies, $parameters);
+        
+        return array_values(
+            array_filter(
+                array_merge($dependencies, $parameters)
+            )
+        );
     }
 
     /**
@@ -599,7 +603,13 @@ class Container implements ArrayAccess, ContainerContract
      */
     protected function getParameterName($parameter)
     {
-        return $this->getParameterType($parameter)->getName();
+        $parameterType = $this->getParameterType($parameter);
+
+        if (property_exists($parameterType, 'name')) {
+            return $parameterType->name;
+        }
+
+        return $parameterType->getName();
     }
 
     /**
