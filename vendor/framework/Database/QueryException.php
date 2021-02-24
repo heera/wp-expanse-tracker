@@ -2,9 +2,9 @@
 
 namespace Alpha\Framework\Database;
 
-use Exception;
+use PDOException;
 
-class QueryException extends Exception {
+class QueryException extends PDOException {
 
 	/**
 	 * The SQL for the query.
@@ -37,6 +37,10 @@ class QueryException extends Exception {
 		$this->previous = $previous;
 		$this->code = $previous->getCode();
 		$this->message = $this->formatMessage($sql, $bindings, $previous);
+
+		if ($previous instanceof PDOException) {
+            $this->errorInfo = $previous->errorInfo;
+        }
 	}
 
 	/**
@@ -49,7 +53,9 @@ class QueryException extends Exception {
 	 */
 	protected function formatMessage($sql, $bindings, $previous)
 	{
-		return $previous->getMessage() . ' (SQL: ' . $this->strReplaceArray('\?', $bindings, $sql) . ')';
+		$message = $this->strReplaceArray('\?', $bindings, $sql);
+
+		return $previous->getMessage() . ' (SQL: ' . $message . ')';
 	}
 
 	/**
@@ -72,6 +78,14 @@ class QueryException extends Exception {
 		return $this->bindings;
 	}
 
+	/**
+	 * Replace placeholders with bindings
+	 * 
+	 * @param  string $search
+	 * @param  array  $replace
+	 * @param  string $subject
+	 * @return string $subject
+	 */
 	protected function strReplaceArray($search, array $replace, $subject)
     {
         foreach ($replace as $value) {

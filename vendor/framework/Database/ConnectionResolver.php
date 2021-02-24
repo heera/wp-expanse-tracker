@@ -5,16 +5,16 @@ namespace Alpha\Framework\Database;
 use Alpha\Framework\Foundation\App;
 use Alpha\Framework\Database\ConnectionResolverInterface;
 
-class ConnectionResolver implements ConnectionResolverInterface {
-
+class ConnectionResolver implements ConnectionResolverInterface
+{
     /**
      * Get a database connection instance.
      *
-     * @param  string $name
-     *
-     * @return \Illuminate\Database\Connection
+     * @param  string  $name
+     * @return \Alpha\Database\ConnectionInterface
      */
-    public function connection( $name = null ) {
+    public function connection($name = null)
+    {
         return App::getInstance('db');
     }
 
@@ -23,18 +23,19 @@ class ConnectionResolver implements ConnectionResolverInterface {
      *
      * @return string
      */
-    public function getDefaultConnection() {
-        // TODO: Implement getDefaultConnection() method.
+    public function getDefaultConnection()
+    {
+        // Pass
     }
 
     /**
      * Set the default connection name.
      *
-     * @param  string $name
-     *
+     * @param  string  $name
      * @return void
      */
-    public function setDefaultConnection( $name ) {
-        // TODO: Implement setDefaultConnection() method.
+    public function setDefaultConnection($name)
+    {
+        // Pass
     }
 }
