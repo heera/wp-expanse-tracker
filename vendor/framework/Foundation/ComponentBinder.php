@@ -10,7 +10,7 @@ use Alpha\Framework\Database\Orm\Model;
 use Alpha\Framework\Validator\Validator;
 use Alpha\Framework\Foundation\Dispatcher;
 use Alpha\Framework\Foundation\RequestGuard;
-use Alpha\Framework\Database\AbstractPaginator;
+use Alpha\Framework\Pagination\AbstractPaginator;
 use Alpha\Framework\Database\ConnectionResolver;
 use Alpha\Framework\Database\Query\WPDBConnection;
 use Alpha\Framework\Foundation\UnAuthorizedException;

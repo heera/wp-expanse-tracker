@@ -1,6 +1,6 @@
 <?php
 
-namespace Alpha\Framework\Database;
+namespace Alpha\Framework\Pagination;
 
 use Countable;
 use ArrayAccess;
@@ -8,9 +8,9 @@ use JsonSerializable;
 use IteratorAggregate;
 use Alpha\Framework\Support\Collection;
 use Alpha\Framework\Support\JsonableInterface;
-use Alpha\Framework\Support\Presenter;
 use Alpha\Framework\Support\ArrayableInterface;
-use Alpha\Framework\Support\PaginatorInterface as PaginatorContract;
+use Alpha\Framework\Pagination\Presenter;
+use Alpha\Framework\Pagination\PaginatorInterface as PaginatorContract;
 
 class Paginator extends AbstractPaginator implements ArrayableInterface, ArrayAccess, Countable, IteratorAggregate, JsonSerializable, JsonableInterface, PaginatorContract
 {
@@ -94,7 +94,7 @@ class Paginator extends AbstractPaginator implements ArrayableInterface, ArrayAc
     /**
      * Render the paginator using the given presenter.
      *
-     * @param  \Illuminate\Contracts\Pagination\Presenter|null  $presenter
+     * @param  \Alpha\Framework\Pagination\Presenter|null  $presenter
      * @return string
      */
     public function links(Presenter $presenter = null)
@@ -105,7 +105,7 @@ class Paginator extends AbstractPaginator implements ArrayableInterface, ArrayAc
     /**
      * Render the paginator using the given presenter.
      *
-     * @param  \Illuminate\Contracts\Pagination\Presenter|null  $presenter
+     * @param  \Alpha\Framework\Pagination\Presenter|null  $presenter
      * @return string
      */
     public function render(Presenter $presenter = null)

@@ -1,6 +1,6 @@
 <?php
 
-namespace Alpha\Framework\Database;
+namespace Alpha\Framework\Pagination;
 
 use Countable;
 use ArrayAccess;
@@ -9,9 +9,10 @@ use IteratorAggregate;
 use Alpha\Framework\Support\Collection;
 use Alpha\Framework\Support\JsonableInterface;
 use Alpha\Framework\Support\ArrayableInterface;
-use Alpha\Framework\Database\Paginator;
-use Alpha\Framework\Support\Presenter;
-use Alpha\Framework\Support\LengthAwarePaginatorInterface;
+use Alpha\Framework\Pagination\Presenter;
+use Alpha\Framework\Pagination\Paginator;
+use Alpha\Framework\Pagination\AbstractPaginator;
+use Alpha\Framework\Pagination\LengthAwarePaginatorInterface;
 
 class LengthAwarePaginator extends AbstractPaginator implements ArrayableInterface, ArrayAccess, Countable, IteratorAggregate, JsonSerializable, JsonableInterface, LengthAwarePaginatorInterface
 {
@@ -112,7 +113,7 @@ class LengthAwarePaginator extends AbstractPaginator implements ArrayableInterfa
     /**
      * Render the paginator using the given presenter.
      *
-     * @param  \Illuminate\Contracts\Pagination\Presenter|null  $presenter
+     * @param  \Alpha\Framework\Pagination\Presenter|null  $presenter
      * @return string
      */
     public function links(Presenter $presenter = null)
@@ -123,7 +124,7 @@ class LengthAwarePaginator extends AbstractPaginator implements ArrayableInterfa
     /**
      * Render the paginator using the given presenter.
      *
-     * @param  \Illuminate\Contracts\Pagination\Presenter|null  $presenter
+     * @param  \Alpha\Framework\Pagination\Presenter|null  $presenter
      * @return string
      */
     public function render(Presenter $presenter = null)

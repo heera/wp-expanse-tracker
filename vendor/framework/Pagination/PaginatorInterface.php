@@ -1,6 +1,6 @@
 <?php
 
-namespace Alpha\Framework\Support;
+namespace Alpha\Framework\Pagination;
 
 interface PaginatorInterface
 {

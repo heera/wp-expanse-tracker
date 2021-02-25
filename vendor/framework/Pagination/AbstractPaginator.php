@@ -1,19 +1,19 @@
 <?php
 
-namespace Alpha\Framework\Database;
+namespace Alpha\Framework\Pagination;
 
 use Closure;
 use ArrayIterator;
 use Alpha\Framework\Support\Str;
-use Alpha\Framework\Support\Collection;
 use Alpha\Framework\Support\Htmlable;
+use Alpha\Framework\Support\Collection;
 
 abstract class AbstractPaginator implements Htmlable
 {
     /**
      * All of the items being paginated.
      *
-     * @var \Illuminate\Support\Collection
+     * @var \Alpha\Framework\Support\Collection
      */
     protected $items;
 
@@ -423,7 +423,7 @@ abstract class AbstractPaginator implements Htmlable
     /**
      * Get the paginator's underlying collection.
      *
-     * @return \Illuminate\Support\Collection
+     * @return \Alpha\Framework\Support\Collection
      */
     public function getCollection()
     {
@@ -433,7 +433,7 @@ abstract class AbstractPaginator implements Htmlable
     /**
      * Set the paginator's underlying collection.
      *
-     * @param  \Illuminate\Support\Collection  $collection
+     * @param  \Alpha\Framework\Support\Collection  $collection
      * @return $this
      */
     public function setCollection(Collection $collection)
