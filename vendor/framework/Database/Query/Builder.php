@@ -1648,6 +1648,45 @@ class Builder
 	}
 
 	/**
+     * Get the count of the total records for the paginator.
+     *
+     * @param  array  $columns
+     * @return int
+     */
+    public function getCountForPagination($columns = ['*'])
+    {
+        $this->backupFieldsForCount();
+
+        $this->aggregate = ['function' => 'count', 'columns' => $this->clearSelectAliases($columns)];
+
+        $results = $this->get();
+
+        $this->aggregate = null;
+
+        $this->restoreFieldsForCount();
+
+        if (isset($this->groups)) {
+            return count($results);
+        }
+
+        return isset($results[0]) ? (int) array_change_key_case((array) $results[0])['aggregate'] : 0;
+    }
+
+    /**
+     * Remove the column aliases since they will break count queries.
+     *
+     * @param  array  $columns
+     * @return array
+     */
+    protected function clearSelectAliases(array $columns)
+    {
+        return array_map(function ($column) {
+            return is_string($column) && ($aliasPosition = strpos(strtolower($column), ' as ')) !== false
+                    ? substr($column, 0, $aliasPosition) : $column;
+        }, $columns);
+    }
+
+	/**
 	 * Create a paginator for a grouped pagination statement.
 	 *
 	 * @param  Alpha\Framework\Pagination\Factory  $paginator
