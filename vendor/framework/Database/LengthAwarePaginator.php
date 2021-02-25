@@ -8,65 +8,63 @@ use JsonSerializable;
 use IteratorAggregate;
 use Alpha\Framework\Support\Collection;
 use Alpha\Framework\Support\JsonableInterface;
-use Alpha\Framework\Support\Presenter;
 use Alpha\Framework\Support\ArrayableInterface;
-use Alpha\Framework\Support\PaginatorInterface as PaginatorContract;
+use Alpha\Framework\Database\Paginator;
+use Alpha\Framework\Support\Presenter;
+use Alpha\Framework\Support\LengthAwarePaginatorInterface;
 
-class Paginator extends AbstractPaginator implements ArrayableInterface, ArrayAccess, Countable, IteratorAggregate, JsonSerializable, JsonableInterface, PaginatorContract
+class LengthAwarePaginator extends AbstractPaginator implements ArrayableInterface, ArrayAccess, Countable, IteratorAggregate, JsonSerializable, JsonableInterface, LengthAwarePaginatorInterface
 {
     /**
-     * Determine if there are more items in the data source.
+     * The total number of items before slicing.
      *
-     * @return bool
+     * @var int
      */
-    protected $hasMore;
+    protected $total;
+
+    /**
+     * The last available page.
+     *
+     * @var int
+     */
+    protected $lastPage;
 
     /**
      * Create a new paginator instance.
      *
      * @param  mixed  $items
+     * @param  int  $total
      * @param  int  $perPage
      * @param  int|null  $currentPage
      * @param  array  $options (path, query, fragment, pageName)
      * @return void
      */
-    public function __construct($items, $perPage, $currentPage = null, array $options = [])
+    public function __construct($items, $total, $perPage, $currentPage = null, array $options = [])
     {
         foreach ($options as $key => $value) {
             $this->{$key} = $value;
         }
 
+        $this->total = $total;
         $this->perPage = $perPage;
-        $this->currentPage = $this->setCurrentPage($currentPage);
+        $this->lastPage = (int) ceil($total / $perPage);
         $this->path = $this->path != '/' ? rtrim($this->path, '/') : $this->path;
+        $this->currentPage = $this->setCurrentPage($currentPage, $this->lastPage);
         $this->items = $items instanceof Collection ? $items : Collection::make($items);
-
-        $this->checkForMorePages();
     }
 
     /**
      * Get the current page for the request.
      *
      * @param  int  $currentPage
+     * @param  int  $lastPage
      * @return int
      */
-    protected function setCurrentPage($currentPage)
+    protected function setCurrentPage($currentPage, $lastPage)
     {
         $currentPage = $currentPage ?: static::resolveCurrentPage();
 
         return $this->isValidPageNumber($currentPage) ? (int) $currentPage : 1;
-    }
-
-    /**
-     * Check for more pages. The last item will be sliced off.
-     *
-     * @return void
-     */
-    protected function checkForMorePages()
-    {
-        $this->hasMore = count($this->items) > ($this->perPage);
-
-        $this->items = $this->items->slice(0, $this->perPage);
     }
 
     /**
@@ -76,7 +74,7 @@ class Paginator extends AbstractPaginator implements ArrayableInterface, ArrayAc
      */
     public function nextPageUrl()
     {
-        if ($this->hasMorePages()) {
+        if ($this->lastPage() > $this->currentPage()) {
             return $this->url($this->currentPage() + 1);
         }
     }
@@ -88,7 +86,27 @@ class Paginator extends AbstractPaginator implements ArrayableInterface, ArrayAc
      */
     public function hasMorePages()
     {
-        return $this->hasMore;
+        return $this->currentPage() < $this->lastPage();
+    }
+
+    /**
+     * Get the total number of items being paginated.
+     *
+     * @return int
+     */
+    public function total()
+    {
+        return $this->total;
+    }
+
+    /**
+     * Get the last page.
+     *
+     * @return int
+     */
+    public function lastPage()
+    {
+        return $this->lastPage;
     }
 
     /**
@@ -114,7 +132,7 @@ class Paginator extends AbstractPaginator implements ArrayableInterface, ArrayAc
             $presenter = call_user_func(static::$presenterResolver, $this);
         }
 
-        $presenter = $presenter ?: new SimpleBootstrapThreePresenter($this);
+        $presenter = $presenter ?: new BootstrapThreePresenter($this);
 
         return $presenter->render();
     }
@@ -127,10 +145,15 @@ class Paginator extends AbstractPaginator implements ArrayableInterface, ArrayAc
     public function toArray()
     {
         return [
-            'per_page' => $this->perPage(), 'current_page' => $this->currentPage(),
-            'next_page_url' => $this->nextPageUrl(), 'prev_page_url' => $this->previousPageUrl(),
-            'from' => $this->firstItem(), 'to' => $this->lastItem(),
-            'data' => $this->items->toArray(),
+            'total'         => $this->total(),
+            'per_page'      => $this->perPage(),
+            'current_page'  => $this->currentPage(),
+            'last_page'     => $this->lastPage(),
+            'next_page_url' => $this->nextPageUrl(),
+            'prev_page_url' => $this->previousPageUrl(),
+            'from'          => $this->firstItem(),
+            'to'            => $this->lastItem(),
+            'data'          => $this->items->toArray(),
         ];
     }
 
