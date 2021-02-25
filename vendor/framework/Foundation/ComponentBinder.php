@@ -10,6 +10,7 @@ use Alpha\Framework\Database\Orm\Model;
 use Alpha\Framework\Validator\Validator;
 use Alpha\Framework\Foundation\Dispatcher;
 use Alpha\Framework\Foundation\RequestGuard;
+use Alpha\Framework\Database\AbstractPaginator;
 use Alpha\Framework\Database\ConnectionResolver;
 use Alpha\Framework\Database\Query\WPDBConnection;
 use Alpha\Framework\Foundation\UnAuthorizedException;
@@ -39,6 +40,8 @@ class ComponentBinder
             $method = "bind{$value}";
             $this->{$method}();
         }
+
+        $this->initPaginator();
 
         $this->extendBindings();
     }
@@ -105,6 +108,23 @@ class ComponentBinder
     {
         $this->app->singleton('rest', function($app) {
             return new Rest($app);
+        });
+    }
+
+    protected function initPaginator()
+    {
+        AbstractPaginator::currentPathResolver(function () {
+            return $this->app['request']->url();
+        });
+        
+        AbstractPaginator::currentPageResolver(function ($pageName = 'page') {
+            $page = $this->app['request']->get($pageName);
+
+            if (filter_var($page, FILTER_VALIDATE_INT) !== false && (int) $page >= 1) {
+                return $page;
+            }
+
+            return 1;
         });
     }
 

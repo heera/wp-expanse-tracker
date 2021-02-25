@@ -245,6 +245,16 @@ class Request
     }
 
     /**
+     * Get the URL (no query string) for the request.
+     *
+     * @return string
+     */
+    public function url()
+    {
+        return rtrim(preg_replace('/\?.*/', '', $_SERVER['REQUEST_URI']), '/');
+    }
+
+    /**
      * Get an input element from the request.
      *
      * @param  string $key
