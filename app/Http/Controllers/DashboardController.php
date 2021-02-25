@@ -17,7 +17,7 @@ class DashboardController extends Controller
         // dd($this->app->rest->getRoutes());
         return [
             'total' => Entry::sum('amount'),
-            'accounts' => Account::with('ledgers.entries')->latest('updated_at')->Paginate(3),
+            'accounts' => Account::with('ledgers.entries')->latest('updated_at')->paginate(3),
             'first' => date('d-m-Y', strtotime(Entry::oldest()->limit(1)->first()->created_at)),
             'last' => date('d-m-Y', strtotime(Entry::latest()->limit(1)->first()->created_at))
         ];
