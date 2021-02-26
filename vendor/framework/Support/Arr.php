@@ -4,6 +4,7 @@ namespace Alpha\Framework\Support;
 
 use Closure;
 use ArrayAccess;
+use Alpha\Framework\Support\Helper;
 use Alpha\Framework\Support\Collection;
 use Alpha\Framework\Support\MacroableTrait;
 
@@ -158,7 +159,7 @@ class Arr
     public static function first($array, callable $callback = null, $default = null)
     {
         if (is_null($callback)) {
-            return empty($array) ? static::value($default) : reset($array);
+            return empty($array) ? Helper::value($default) : reset($array);
         }
 
         foreach ($array as $key => $value) {
@@ -167,7 +168,7 @@ class Arr
             }
         }
 
-        return static::value($default);
+        return Helper::value($default);
     }
 
     /**
@@ -181,7 +182,7 @@ class Arr
     public static function last($array, callable $callback = null, $default = null)
     {
         if (is_null($callback)) {
-            return empty($array) ? static::value($default) : end($array);
+            return empty($array) ? Helper::value($default) : end($array);
         }
 
         return static::first(array_reverse($array), $callback, $default);
@@ -272,7 +273,7 @@ class Arr
     public static function get($array, $key, $default = null)
     {
         if (! static::accessible($array)) {
-            return static::value($default);
+            return Helper::value($default);
         }
 
         if (is_null($key)) {
@@ -287,7 +288,7 @@ class Arr
             if (static::accessible($array) && static::exists($array, $segment)) {
                 $array = $array[$segment];
             } else {
-                return static::value($default);
+                return Helper::value($default);
             }
         }
 
@@ -368,7 +369,7 @@ class Arr
         list($value, $key) = static::explodePluckParameters($value, $key);
 
         foreach ($array as $item) {
-            $itemValue = data_get($item, $value);
+            $itemValue = Helper::dataGet($item, $value);
 
             // If the key is "null", we will just append the value to the array and keep
             // looping. Otherwise we will key the array using the value of the key we
@@ -376,7 +377,7 @@ class Arr
             if (is_null($key)) {
                 $results[] = $itemValue;
             } else {
-                $itemKey = data_get($item, $key);
+                $itemKey = Helper::dataGet($item, $key);
 
                 $results[$itemKey] = $itemValue;
             }
@@ -526,10 +527,5 @@ class Arr
         }
 
         return $filtered;
-    }
-
-    public static function value($value)
-    {
-        return $value instanceof Closure ? $value() : $value;
     }
 }

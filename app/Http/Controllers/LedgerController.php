@@ -37,8 +37,8 @@ class LedgerController extends Controller
             'total' => Entry::sum('amount'),
             'accounts' => Account::all(),
             'ledgers' => $ledgers,
-            'first' => date('d-m-Y', strtotime(Entry::oldest()->limit(1)->first()->created_at)),
-            'last' => date('d-m-Y', strtotime(Entry::latest()->limit(1)->first()->created_at))
+            'first' => Entry::oldest()->limit(1)->first()->created_at->format('d-m-Y'),
+            'last' => Entry::latest()->limit(1)->first()->created_at->format('d-m-Y')
         ];
     }
 
@@ -59,8 +59,8 @@ class LedgerController extends Controller
         return [
             'ledger' => $ledger,
             'total' => Entry::sum('amount'),
-            'first' => date('d-m-Y', strtotime(Entry::oldest()->limit(1)->first()->created_at)),
-            'last' => date('d-m-Y', strtotime(Entry::latest()->limit(1)->first()->created_at))
+            'first' => Entry::oldest()->limit(1)->first()->created_at->format('d-m-Y'),
+            'last' => Entry::latest()->limit(1)->first()->created_at->format('d-m-Y')
         ];
     }
 

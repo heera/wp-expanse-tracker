@@ -5,11 +5,13 @@ namespace Alpha\Framework\Support;
 use Closure;
 use Countable;
 use ArrayAccess;
+use Traversable;
 use ArrayIterator;
 use CachingIterator;
 use JsonSerializable;
 use IteratorAggregate;
 use Alpha\Framework\Support\Arr;
+use Alpha\Framework\Support\Helper;
 use Alpha\Framework\Support\MacroableTrait;
 use Alpha\Framework\Support\JsonableInterface;
 use Alpha\Framework\Support\ArrayableInterface;
@@ -95,7 +97,7 @@ class Collection implements ArrayAccess, ArrayableInterface, Countable, Iterator
             return;
         }
 
-        $values = with(isset($key) ? $this->pluck($key) : $this)
+        $values = (isset($key) ? $this->pluck($key) : $this)
                     ->sort()->values();
 
         $middle = (int) floor($count / 2);
@@ -161,7 +163,7 @@ class Collection implements ArrayAccess, ArrayableInterface, Countable, Iterator
     {
         if (func_num_args() == 2) {
             return $this->contains(function ($k, $item) use ($key, $value) {
-                return data_get($item, $key) == $value;
+                return Helper::dataGet($item, $key) == $value;
             });
         }
 
@@ -282,8 +284,8 @@ class Collection implements ArrayAccess, ArrayableInterface, Countable, Iterator
     public function where($key, $value, $strict = true)
     {
         return $this->filter(function ($item) use ($key, $value, $strict) {
-            return $strict ? data_get($item, $key) === $value
-                           : data_get($item, $key) == $value;
+            return $strict ? Helper::dataGet($item, $key) === $value
+                           : Helper::dataGet($item, $key) == $value;
         });
     }
 
@@ -310,7 +312,7 @@ class Collection implements ArrayAccess, ArrayableInterface, Countable, Iterator
     public function whereIn($key, array $values, $strict = true)
     {
         return $this->filter(function ($item) use ($key, $values, $strict) {
-            return in_array(data_get($item, $key), $values, $strict);
+            return in_array(Helper::dataGet($item, $key), $values, $strict);
         });
     }
 
@@ -585,7 +587,7 @@ class Collection implements ArrayAccess, ArrayableInterface, Countable, Iterator
     public function max($key = null)
     {
         return $this->reduce(function ($result, $item) use ($key) {
-            $value = data_get($item, $key);
+            $value = Helper::dataGet($item, $key);
 
             return is_null($result) || $value > $result ? $value : $result;
         });
@@ -633,7 +635,7 @@ class Collection implements ArrayAccess, ArrayableInterface, Countable, Iterator
     public function min($key = null)
     {
         return $this->reduce(function ($result, $item) use ($key) {
-            $value = data_get($item, $key);
+            $value = Helper::dataGet($item, $key);
 
             return is_null($result) || $value < $result ? $value : $result;
         });
@@ -1065,7 +1067,7 @@ class Collection implements ArrayAccess, ArrayableInterface, Countable, Iterator
         }
 
         return function ($item) use ($value) {
-            return data_get($item, $value);
+            return Helper::dataGet($item, $value);
         };
     }
 
@@ -1099,7 +1101,7 @@ class Collection implements ArrayAccess, ArrayableInterface, Countable, Iterator
     public function toArray()
     {
         return array_map(function ($value) {
-            return $value instanceof Arrayable ? $value->toArray() : $value;
+            return $value instanceof ArrayableInterface ? $value->toArray() : $value;
         }, $this->items);
     }
 
@@ -1113,9 +1115,9 @@ class Collection implements ArrayAccess, ArrayableInterface, Countable, Iterator
         return array_map(function ($value) {
             if ($value instanceof JsonSerializable) {
                 return $value->jsonSerialize();
-            } elseif ($value instanceof Jsonable) {
+            } elseif ($value instanceof JsonableInterface) {
                 return json_decode($value->toJson(), true);
-            } elseif ($value instanceof Arrayable) {
+            } elseif ($value instanceof ArrayableInterface) {
                 return $value->toArray();
             } else {
                 return $value;
@@ -1225,7 +1227,7 @@ class Collection implements ArrayAccess, ArrayableInterface, Countable, Iterator
     }
 
     /**
-     * Results array of items from Collection or Arrayable.
+     * Results array of items from Collection or ArrayableInterface.
      *
      * @param  mixed  $items
      * @return array
@@ -1236,9 +1238,9 @@ class Collection implements ArrayAccess, ArrayableInterface, Countable, Iterator
             return $items;
         } elseif ($items instanceof self) {
             return $items->all();
-        } elseif ($items instanceof Arrayable) {
+        } elseif ($items instanceof ArrayableInterface) {
             return $items->toArray();
-        } elseif ($items instanceof Jsonable) {
+        } elseif ($items instanceof JsonableInterface) {
             return json_decode($items->toJson(), true);
         } elseif ($items instanceof JsonSerializable) {
             return $items->jsonSerialize();

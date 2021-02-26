@@ -1616,7 +1616,7 @@ class Builder
 	 * This is a custom method added which overrides the original paginate
 	 * method in this class and the methood is renamed to laravel_paginate.
 	 */
-	public function paginate($perPage = 10, $columns = array('*'))
+	public function _paginate($perPage = 10, $columns = array('*'))
 	{
 		$perPage = intval(Arr::get($_REQUEST, 'per_page')) ?: $perPage;
 		
