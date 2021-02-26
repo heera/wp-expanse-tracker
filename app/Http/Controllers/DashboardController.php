@@ -15,11 +15,13 @@ class DashboardController extends Controller
     public function index(Request $request)
     {
         // dd($this->app->rest->getRoutes());
+        // return Account::with('ledgers.entries')->latest('updated_at')->paginate(3);
+        
         return [
             'total' => Entry::sum('amount'),
-            'accounts' => Account::with('ledgers.entries')->latest('updated_at')->Paginate(3),
-            'first' => date('d-m-Y', strtotime(Entry::oldest()->limit(1)->first()->created_at)),
-            'last' => date('d-m-Y', strtotime(Entry::latest()->limit(1)->first()->created_at))
+            'accounts' => Account::with('ledgers.entries')->latest('updated_at')->paginate(3),
+            'first' => Entry::oldest()->limit(1)->first()->created_at->format('d-m-Y'),
+            'last' => Entry::latest()->limit(1)->first()->created_at->format('d-m-Y')
         ];
     }
 
@@ -35,7 +37,7 @@ class DashboardController extends Controller
 
             $stats = [];
             foreach($chartData as $entry) {
-                $date = explode(' ', $entry->created_at);
+                $date = explode(' ', $entry->created_at->format('Y-m-d'));
                 $existing = Arr::get($stats, $date[0], 0);
                 $stats[$date[0]] = $existing + $entry->amount;
             }

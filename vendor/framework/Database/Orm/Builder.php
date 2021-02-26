@@ -18,14 +18,14 @@ class Builder
     /**
      * The base query builder instance.
      *
-     * @var \Illuminate\Database\Query\Builder
+     * @var \Alpha\Framework\Database\Query\Builder
      */
     protected $query;
 
     /**
      * The model being queried.
      *
-     * @var \Illuminate\Database\Eloquent\Model
+     * @var \Alpha\Framework\Database\Orm\Model
      */
     protected $model;
 
@@ -77,7 +77,7 @@ class Builder
     /**
      * Create a new Eloquent query builder instance.
      *
-     * @param  \Illuminate\Database\Query\Builder  $query
+     * @param  \Alpha\Framework\Database\Query\Builder  $query
      * @return void
      */
     public function __construct(QueryBuilder $query)
@@ -89,7 +89,7 @@ class Builder
      * Register a new global scope.
      *
      * @param  string  $identifier
-     * @param  \Illuminate\Database\Eloquent\Scope|\Closure  $scope
+     * @param  \Alpha\Framework\Database\Orm\Scope|\Closure  $scope
      * @return $this
      */
     public function withGlobalScope($identifier, $scope)
@@ -106,7 +106,7 @@ class Builder
     /**
      * Remove a registered global scope.
      *
-     * @param  \Illuminate\Database\Eloquent\Scope|string  $scope
+     * @param  \Alpha\Framework\Database\Orm\Scope|string  $scope
      * @return $this
      */
     public function withoutGlobalScope($scope)
@@ -156,7 +156,7 @@ class Builder
      *
      * @param  mixed  $id
      * @param  array  $columns
-     * @return \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Collection|static[]|static|null
+     * @return \Alpha\Framework\Database\Orm\Model|\Alpha\Framework\Database\Orm\Collection|static[]|static|null
      */
     public function find($id, $columns = ['*'])
     {
@@ -174,7 +174,7 @@ class Builder
      *
      * @param  array  $ids
      * @param  array  $columns
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return \Alpha\Framework\Database\Orm\Collection
      */
     public function findMany($ids, $columns = ['*'])
     {
@@ -192,9 +192,9 @@ class Builder
      *
      * @param  mixed  $id
      * @param  array  $columns
-     * @return \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Collection
+     * @return \Alpha\Framework\Database\Orm\Model|\Alpha\Framework\Database\Orm\Collection
      *
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     * @throws \Alpha\Framework\Database\Orm\ModelNotFoundException
      */
     public function findOrFail($id, $columns = ['*'])
     {
@@ -216,7 +216,7 @@ class Builder
      *
      * @param  mixed  $id
      * @param  array  $columns
-     * @return \Illuminate\Database\Eloquent\Model
+     * @return \Alpha\Framework\Database\Orm\Model
      */
     public function findOrNew($id, $columns = ['*'])
     {
@@ -231,7 +231,7 @@ class Builder
      * Get the first record matching the attributes or instantiate it.
      *
      * @param  array  $attributes
-     * @return \Illuminate\Database\Eloquent\Model
+     * @return \Alpha\Framework\Database\Orm\Model
      */
     public function firstOrNew(array $attributes)
     {
@@ -246,7 +246,7 @@ class Builder
      * Get the first record matching the attributes or create it.
      *
      * @param  array  $attributes
-     * @return \Illuminate\Database\Eloquent\Model
+     * @return \Alpha\Framework\Database\Orm\Model
      */
     public function firstOrCreate(array $attributes)
     {
@@ -266,7 +266,7 @@ class Builder
      *
      * @param  array  $attributes
      * @param  array  $values
-     * @return \Illuminate\Database\Eloquent\Model
+     * @return \Alpha\Framework\Database\Orm\Model
      */
     public function updateOrCreate(array $attributes, array $values = [])
     {
@@ -281,7 +281,7 @@ class Builder
      * Execute the query and get the first result.
      *
      * @param  array  $columns
-     * @return \Illuminate\Database\Eloquent\Model|static|null
+     * @return \Alpha\Framework\Database\Orm\Model|static|null
      */
     public function first($columns = ['*'])
     {
@@ -292,9 +292,9 @@ class Builder
      * Execute the query and get the first result or throw an exception.
      *
      * @param  array  $columns
-     * @return \Illuminate\Database\Eloquent\Model|static
+     * @return \Alpha\Framework\Database\Orm\Model|static
      *
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     * @throws \Alpha\Framework\Database\Orm\ModelNotFoundException
      */
     public function firstOrFail($columns = ['*'])
     {
@@ -309,7 +309,7 @@ class Builder
      * Execute the query as a "select" statement.
      *
      * @param  array  $columns
-     * @return \Illuminate\Database\Eloquent\Collection|static[]
+     * @return \Alpha\Framework\Database\Orm\Collection|static[]
      */
     public function get($columns = ['*'])
     {
@@ -620,7 +620,7 @@ class Builder
      * Get the hydrated models without eager loading.
      *
      * @param  array  $columns
-     * @return \Illuminate\Database\Eloquent\Model[]
+     * @return \Alpha\Framework\Database\Orm\Model[]
      */
     public function getModels($columns = ['*'])
     {
@@ -684,7 +684,7 @@ class Builder
      * Get the relation instance for the given relation name.
      *
      * @param  string  $name
-     * @return \Illuminate\Database\Eloquent\Relations\Relation
+     * @return \Alpha\Framework\Database\Orm\Relations\Relation
      */
     public function getRelation($name)
     {
@@ -791,7 +791,7 @@ class Builder
      * @param  string  $column
      * @param  string  $operator
      * @param  mixed   $value
-     * @return \Illuminate\Database\Eloquent\Builder|static
+     * @return \Alpha\Framework\Database\Orm\Builder|static
      */
     public function orWhere($column, $operator = null, $value = null)
     {
@@ -806,7 +806,7 @@ class Builder
      * @param  int     $count
      * @param  string  $boolean
      * @param  \Closure|null  $callback
-     * @return \Illuminate\Database\Eloquent\Builder|static
+     * @return \Alpha\Framework\Database\Orm\Builder|static
      */
     public function has($relation, $operator = '>=', $count = 1, $boolean = 'and', Closure $callback = null)
     {
@@ -841,7 +841,7 @@ class Builder
      * @param  int     $count
      * @param  string  $boolean
      * @param  \Closure|null  $callback
-     * @return \Illuminate\Database\Eloquent\Builder|static
+     * @return \Alpha\Framework\Database\Orm\Builder|static
      */
     protected function hasNested($relations, $operator = '>=', $count = 1, $boolean = 'and', $callback = null)
     {
@@ -867,7 +867,7 @@ class Builder
      * @param  string  $relation
      * @param  string  $boolean
      * @param  \Closure|null  $callback
-     * @return \Illuminate\Database\Eloquent\Builder|static
+     * @return \Alpha\Framework\Database\Orm\Builder|static
      */
     public function doesntHave($relation, $boolean = 'and', Closure $callback = null)
     {
@@ -881,7 +881,7 @@ class Builder
      * @param  \Closure  $callback
      * @param  string    $operator
      * @param  int       $count
-     * @return \Illuminate\Database\Eloquent\Builder|static
+     * @return \Alpha\Framework\Database\Orm\Builder|static
      */
     public function whereHas($relation, Closure $callback, $operator = '>=', $count = 1)
     {
@@ -893,7 +893,7 @@ class Builder
      *
      * @param  string  $relation
      * @param  \Closure|null  $callback
-     * @return \Illuminate\Database\Eloquent\Builder|static
+     * @return \Alpha\Framework\Database\Orm\Builder|static
      */
     public function whereDoesntHave($relation, Closure $callback = null)
     {
@@ -906,7 +906,7 @@ class Builder
      * @param  string  $relation
      * @param  string  $operator
      * @param  int     $count
-     * @return \Illuminate\Database\Eloquent\Builder|static
+     * @return \Alpha\Framework\Database\Orm\Builder|static
      */
     public function orHas($relation, $operator = '>=', $count = 1)
     {
@@ -920,7 +920,7 @@ class Builder
      * @param  \Closure  $callback
      * @param  string    $operator
      * @param  int       $count
-     * @return \Illuminate\Database\Eloquent\Builder|static
+     * @return \Alpha\Framework\Database\Orm\Builder|static
      */
     public function orWhereHas($relation, Closure $callback, $operator = '>=', $count = 1)
     {
@@ -930,12 +930,12 @@ class Builder
     /**
      * Add the "has" condition where clause to the query.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $hasQuery
-     * @param  \Illuminate\Database\Eloquent\Relations\Relation  $relation
+     * @param  \Alpha\Framework\Database\Orm\Builder  $hasQuery
+     * @param  \Alpha\Framework\Database\Orm\Relations\Relation  $relation
      * @param  string  $operator
      * @param  int  $count
      * @param  string  $boolean
-     * @return \Illuminate\Database\Eloquent\Builder|static
+     * @return \Alpha\Framework\Database\Orm\Builder|static
      */
     protected function addHasWhere(Builder $hasQuery, Relation $relation, $operator, $count, $boolean)
     {
@@ -965,7 +965,7 @@ class Builder
     /**
      * Add a sub query count clause to the query.
      *
-     * @param  \Illuminate\Database\Query\Builder $query
+     * @param  \Alpha\Framework\Database\Query\Builder $query
      * @param  string  $operator
      * @param  int  $count
      * @param  string  $boolean
@@ -985,8 +985,8 @@ class Builder
     /**
      * Merge the constraints from a relation query to the current query.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $relation
-     * @return \Illuminate\Database\Eloquent\Builder|static
+     * @param  \Alpha\Framework\Database\Orm\Builder  $relation
+     * @return \Alpha\Framework\Database\Orm\Builder|static
      */
     public function mergeModelDefinedRelationConstraints(Builder $relation)
     {
@@ -1006,7 +1006,7 @@ class Builder
      * Get the "has relation" base query instance.
      *
      * @param  string  $relation
-     * @return \Illuminate\Database\Eloquent\Relations\Relation
+     * @return \Alpha\Framework\Database\Orm\Relations\Relation
      */
     protected function getHasRelationQuery($relation)
     {
@@ -1198,7 +1198,7 @@ class Builder
     /**
      * Apply the scopes to the Eloquent builder instance and return it.
      *
-     * @return \Illuminate\Database\Eloquent\Builder|static
+     * @return \Alpha\Framework\Database\Orm\Builder|static
      */
     public function applyScopes()
     {
@@ -1224,7 +1224,7 @@ class Builder
     /**
      * Determine if the scope added after the given offset should be nested.
      *
-     * @param  \Illuminate\Database\Query\Builder  $query
+     * @param  \Alpha\Framework\Database\Query\Builder  $query
      * @param  int  $originalWhereCount
      * @return bool
      */
@@ -1236,7 +1236,7 @@ class Builder
     /**
      * Nest where conditions by slicing them at the given where count.
      *
-     * @param  \Illuminate\Database\Query\Builder  $query
+     * @param  \Alpha\Framework\Database\Query\Builder  $query
      * @param  int  $originalWhereCount
      * @return void
      */
@@ -1261,7 +1261,7 @@ class Builder
     /**
      * Slice where conditions at the given offset and add them to the query as a nested condition.
      *
-     * @param  \Illuminate\Database\Query\Builder  $query
+     * @param  \Alpha\Framework\Database\Query\Builder  $query
      * @param  array  $wheres
      * @param  int  $offset
      * @param  int  $length
@@ -1301,7 +1301,7 @@ class Builder
     /**
      * Get the underlying query builder instance.
      *
-     * @return \Illuminate\Database\Query\Builder
+     * @return \Alpha\Framework\Database\Query\Builder
      */
     public function getQuery()
     {
@@ -1311,7 +1311,7 @@ class Builder
     /**
      * Get a base query builder instance.
      *
-     * @return \Illuminate\Database\Query\Builder
+     * @return \Alpha\Framework\Database\Query\Builder
      */
     public function toBase()
     {
@@ -1321,7 +1321,7 @@ class Builder
     /**
      * Set the underlying query builder instance.
      *
-     * @param  \Illuminate\Database\Query\Builder  $query
+     * @param  \Alpha\Framework\Database\Query\Builder  $query
      * @return $this
      */
     public function setQuery($query)
@@ -1357,7 +1357,7 @@ class Builder
     /**
      * Get the model instance being queried.
      *
-     * @return \Illuminate\Database\Eloquent\Model
+     * @return \Alpha\Framework\Database\Orm\Model
      */
     public function getModel()
     {
@@ -1367,7 +1367,7 @@ class Builder
     /**
      * Set a model instance for the model being queried.
      *
-     * @param  \Illuminate\Database\Eloquent\Model  $model
+     * @param  \Alpha\Framework\Database\Orm\Model  $model
      * @return $this
      */
     public function setModel(Model $model)

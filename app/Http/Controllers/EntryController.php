@@ -35,8 +35,8 @@ class EntryController extends Controller
             'entries' => $entries,
             'total' => Entry::sum('amount'),
             'total_by_account' => $totalByAccount,
-            'first' => date('d-m-Y', strtotime(Entry::oldest()->limit(1)->first()->created_at)),
-            'last' => date('d-m-Y', strtotime(Entry::latest()->limit(1)->first()->created_at))
+            'first' => Entry::oldest()->limit(1)->first()->created_at->format('d-m-Y'),
+            'last' => Entry::latest()->limit(1)->first()->created_at->format('d-m-Y')
         ];
     }
 
@@ -45,8 +45,8 @@ class EntryController extends Controller
         return [
             'total' => Entry::sum('amount'),
             'entry' => Entry::with('ledger.account')->find($id),
-            'first' => date('d-m-Y', strtotime(Entry::oldest()->limit(1)->first()->created_at)),
-            'last' => date('d-m-Y', strtotime(Entry::latest()->limit(1)->first()->created_at))
+            'first' => Entry::oldest()->limit(1)->first()->created_at->format('d-m-Y'),
+            'last' => Entry::latest()->limit(1)->first()->created_at->format('d-m-Y')
         ];
     }
 

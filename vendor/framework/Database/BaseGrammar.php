@@ -27,7 +27,7 @@ abstract class BaseGrammar
     /**
      * Wrap a table in keyword identifiers.
      *
-     * @param  \Alpha\Database\Query\Expression|string  $table
+     * @param  \Illuminate\Database\Query\Expression|string  $table
      * @return string
      */
     public function wrapTable($table)
@@ -42,7 +42,7 @@ abstract class BaseGrammar
     /**
      * Wrap a value in keyword identifiers.
      *
-     * @param  \Alpha\Database\Query\Expression|string  $value
+     * @param  \Illuminate\Database\Query\Expression|string  $value
      * @param  bool    $prefixAlias
      * @return string
      */
@@ -115,7 +115,7 @@ abstract class BaseGrammar
      * @param  array   $values
      * @return string
      */
-    public function parameterize(array $values)
+    public function parameterize($values)
     {
         return implode(', ', array_map([$this, 'parameter'], $values));
     }
@@ -134,7 +134,7 @@ abstract class BaseGrammar
     /**
      * Get the value of a raw expression.
      *
-     * @param  \Alpha\Database\Query\Expression  $expression
+     * @param  \Illuminate\Database\Query\Expression  $expression
      * @return string
      */
     public function getValue($expression)

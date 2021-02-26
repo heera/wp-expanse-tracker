@@ -2,4 +2,9 @@
 
 namespace Alpha\Framework\Database\Orm;
 
-class MassAssignmentException extends \RuntimeException {}
+use RuntimeException;
+
+class MassAssignmentException extends RuntimeException
+{
+    //
+}

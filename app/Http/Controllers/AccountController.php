@@ -22,8 +22,8 @@ class AccountController extends Controller
         if ($request->all) {
             return [
                 'accounts' => $accounts,
-                'first' => date('d-m-Y', strtotime(Entry::oldest()->limit(1)->first()->created_at)),
-                'last' => date('d-m-Y', strtotime(Entry::latest()->limit(1)->first()->created_at))
+                'first' => Entry::oldest()->limit(1)->first()->created_at->format('d-m-Y'),
+                'last' => Entry::latest()->limit(1)->first()->created_at->format('d-m-Y')
             ];
         }
 
@@ -40,8 +40,8 @@ class AccountController extends Controller
         return [
             'accounts' => $accounts,
             'total' => Entry::sum('amount'),
-            'first' => date('d-m-Y', strtotime(Entry::oldest()->limit(1)->first()->created_at)),
-            'last' => date('d-m-Y', strtotime(Entry::latest()->limit(1)->first()->created_at))
+            'first' => Entry::oldest()->limit(1)->first()->created_at->format('d-m-Y'),
+            'last' => Entry::latest()->limit(1)->first()->created_at->format('d-m-Y')
         ];
     }
 
@@ -67,13 +67,13 @@ class AccountController extends Controller
 
 
         $ledgerIds = Account::with('ledgers')->find($id)->ledgers->lists('id');
-        $entries = Entry::whereIn('ledger_id', $ledgerIds)->get();
+        $entries = Entry::whereIn('ledger_id', $ledgerIds->toArray())->get();
         $account->total = $entries->sum('amount');
         
         return [
             'account' => $account,
-            'first' => date('d-m-Y', strtotime(Entry::oldest()->limit(1)->first()->created_at)),
-            'last' => date('d-m-Y', strtotime(Entry::latest()->limit(1)->first()->created_at))
+            'first' => Entry::oldest()->limit(1)->first()->created_at->format('d-m-Y'),
+            'last' => Entry::latest()->limit(1)->first()->created_at->format('d-m-Y')
         ];
     }
 
