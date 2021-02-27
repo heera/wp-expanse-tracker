@@ -2,7 +2,10 @@
 
 namespace Alpha\Framework\Database\Orm;
 
-class ModelNotFoundException extends \RuntimeException {
+use RuntimeException;
+
+class ModelNotFoundException extends RuntimeException
+{
 
 	/**
 	 * Name of the affected Eloquent model.
