@@ -2,7 +2,8 @@
 
 namespace Alpha\Framework\Database\Query;
 
-class Expression {
+class Expression
+{
 
 	/**
 	 * The value of the expression.

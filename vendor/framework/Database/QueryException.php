@@ -4,7 +4,8 @@ namespace Alpha\Framework\Database;
 
 use PDOException;
 
-class QueryException extends PDOException {
+class QueryException extends PDOException
+{
 
 	/**
 	 * The SQL for the query.
