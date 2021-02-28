@@ -2,7 +2,13 @@
 
 namespace Alpha\Framework\Rest;
 
+use Closure;
+use Exception;
+use WP_REST_Request;
+use WP_REST_Response;
+use InvalidArgumentException;
 use Alpha\Framework\Validator\ValidationException;
+use Alpha\Framework\Database\Orm\ModelNotFoundException;
 
 class Route
 {
@@ -148,7 +154,7 @@ class Route
 
     protected function getPolicyHandler($policyHandler)
     {
-        if ($policyHandler instanceof \Closure) {
+        if ($policyHandler instanceof Closure) {
             return function() use ($policyHandler) {
                 $policyHandler($this->app->request);
             };
@@ -185,7 +191,7 @@ class Route
             }
 
             if (in_array($param, $params)) {
-                throw new \InvalidArgumentException(
+                throw new InvalidArgumentException(
                     "Duplicate parameter name \"{$param}\" found in {$uri}."
                 );
             }
@@ -211,7 +217,7 @@ class Route
         return $this->compiled = $compiledUri;
     }
 
-    public function callback(\WP_REST_Request $request)
+    public function callback(WP_REST_Request $request)
     {
         try {
             $this->setRestRequest($request);
@@ -221,7 +227,7 @@ class Route
                 array_values($request->get_url_params())
             );
 
-            if (!($response instanceof \WP_REST_Response)) {
+            if (!($response instanceof WP_REST_Response)) {
                 if (is_wp_error($response)) {
                     $response = $this->sendWPError($response);
                 } else {
@@ -235,14 +241,18 @@ class Route
             return $this->app->response->sendError(
                 $e->errors(), $e->getCode()
             );
-        } catch (\Exception $e) {
+        }  catch (ModelNotFoundException $e) {
+            return $this->app->response->sendError([
+                'message' => $e->getMessage()
+            ], 404);
+        } catch (Exception $e) {
             return $this->app->response->sendError([
                 'message' => $e->getMessage()
             ], $e->getCode());
         }
     }
 
-    public function permissionCallback(\WP_REST_Request $request)
+    public function permissionCallback(WP_REST_Request $request)
     {
         $this->setRestRequest($request);
 
