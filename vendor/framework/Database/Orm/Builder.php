@@ -454,7 +454,7 @@ class Builder
             }
         }
 
-        return collect($results);
+        return new Collection($results);
     }
 
     /**
@@ -1271,7 +1271,7 @@ class Builder
     {
         $whereSlice = array_slice($wheres, $offset, $length);
 
-        $whereBooleans = collect($whereSlice)->pluck('boolean');
+        $whereBooleans = (new Collection($whereSlice))->pluck('boolean');
 
         // Here we'll check if the given subset of where clauses contains any "or"
         // booleans and in this case create a nested where expression. That way

@@ -32,7 +32,7 @@ class ReportController extends Controller
         }
 
         if (empty($inputs['ledger_id']) && !empty($inputs['account_id'])) {
-            $ledgerIds = Account::find($inputs['account_id'])->ledgers()->lists('id');
+            $ledgerIds = Account::find($inputs['account_id'])->ledgers()->lists('id')->toArray();
             $entry->whereIn('ledger_id', $ledgerIds);
         }
 
