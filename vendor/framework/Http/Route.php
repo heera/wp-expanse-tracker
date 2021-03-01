@@ -1,6 +1,6 @@
 <?php
 
-namespace Alpha\Framework\Rest;
+namespace Alpha\Framework\Http;
 
 use Closure;
 use Exception;

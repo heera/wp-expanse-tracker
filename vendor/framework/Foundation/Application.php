@@ -2,6 +2,7 @@
 
 namespace Alpha\Framework\Foundation;
 
+use InvalidArgumentException;
 use Alpha\Framework\Foundation\Config;
 use Alpha\Framework\Foundation\Container;
 use Alpha\Framework\Foundation\FoundationTrait;
@@ -127,16 +128,12 @@ class Application extends Container
         require_once $this->basePath . 'app/Hooks/actions.php';
         require_once $this->basePath . 'app/Hooks/filters.php';
 
-        if (is_admin()) {
-            require_once $this->basePath . 'app/Http/Routes/ajax.php';
-        }
-
         $this->addAction('rest_api_init', function($wpRestServer) use ($app) {
             try {
-                $router = $app->rest;
-                require_once $this->basePath . 'app/Http/Routes/rest.php';
+                $router = $app->router;
+                require_once $this->basePath . 'app/Http/Routes/api.php';
                 $router->registerRoutes();
-            } catch (\InvalidArgumentException $e) {
+            } catch (InvalidArgumentException $e) {
                 $app->doCustomAction('handle_exception', $e);
             }
         });

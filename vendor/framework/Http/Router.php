@@ -1,10 +1,10 @@
 <?php
 
-namespace Alpha\Framework\Rest;
+namespace Alpha\Framework\Http;
 
 use Alpha\Framework\Support\Arr;
 
-class Rest
+class Router
 {
     protected $app = null;
     
