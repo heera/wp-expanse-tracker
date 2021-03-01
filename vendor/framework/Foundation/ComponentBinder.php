@@ -3,7 +3,7 @@
 namespace Alpha\Framework\Foundation;
 
 use Alpha\Framework\View\View;
-use Alpha\Framework\Rest\Rest;
+use Alpha\Framework\Http\Router;
 use Alpha\Framework\Request\Request;
 use Alpha\Framework\Response\Response;
 use Alpha\Framework\Database\Orm\Model;
@@ -26,7 +26,8 @@ class ComponentBinder
         'View',
         'Events',
         'DataBase',
-        'Rest'
+        'Router',
+        'Paginator'
     ];
 
     public function __construct($app)
@@ -41,9 +42,7 @@ class ComponentBinder
             $this->{$method}();
         }
 
-        $this->initPaginator();
-
-        $this->extendBindings();
+        $this->extendBindings($this);
     }
 
     protected function bindRequest()
@@ -104,14 +103,14 @@ class ComponentBinder
         Model::setConnectionResolver(new ConnectionResolver);
     }
 
-    protected function bindRest()
+    protected function bindRouter()
     {
-        $this->app->singleton('rest', function($app) {
-            return new Rest($app);
+        $this->app->singleton('router', function($app) {
+            return new Router($app);
         });
     }
 
-    protected function initPaginator()
+    protected function bindPaginator()
     {
         AbstractPaginator::currentPathResolver(function () {
             return $this->app['request']->url();
@@ -128,7 +127,7 @@ class ComponentBinder
         });
     }
 
-    protected function extendBindings()
+    protected function extendBindings($app)
     {
         $bindings = $this->app['path'] . 'boot/bindings.php';
 

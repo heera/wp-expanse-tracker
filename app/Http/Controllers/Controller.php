@@ -2,7 +2,7 @@
 
 namespace Alpha\App\Http\Controllers;
 
-use Alpha\Framework\Foundation\Controller as BaseController;
+use Alpha\Framework\Http\Controller as BaseController;
 
 abstract class Controller extends BaseController
 {

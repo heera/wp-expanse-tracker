@@ -1,7 +1,8 @@
 <?php
 
-namespace Alpha\Framework\Foundation;
+namespace Alpha\Framework\Http;
 
+use WP_REST_Response;
 use ReflectionException;
 use Alpha\Framework\Foundation\App;
 use Alpha\Framework\Validator\ValidationException;
@@ -74,6 +75,6 @@ abstract class Controller
 
     public function response($data, $code = 200)
     {
-        return new \WP_REST_Response($data, $code);
+        return new WP_REST_Response($data, $code);
     }
 }
