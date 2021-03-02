@@ -102,7 +102,7 @@ interface PaginatorInterface
     /**
      * Render the paginator using a given Presenter.
      *
-     * @param  \Illuminate\Contracts\Pagination\Presenter|null  $presenter
+     * @param  \Alpha\Framework\Pagination\Presenter|null  $presenter
      * @return string
      */
     public function render(Presenter $presenter = null);
