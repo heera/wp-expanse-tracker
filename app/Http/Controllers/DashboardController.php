@@ -14,6 +14,9 @@ class DashboardController extends Controller
 
     public function index(Request $request)
     {
+        // return \Alpha\App\Models\WP\User::with('posts.comments', 'meta')->get();
+        // $db = \Alpha\App\App::make('db');
+        // dd($db->table('posts')->paginate(2)->toArray());
         // dd($this->app->rest->getRoutes());
         // return Account::with('ledgers.entries')->latest('updated_at')->paginate(3);
         

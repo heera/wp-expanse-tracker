@@ -173,7 +173,7 @@ class Container implements ArrayAccess, ContainerContract
      * @param  bool  $shared
      * @return void
      */
-    public function bind($abstract, $concrete = null, $shared = \false)
+    public function bind($abstract, $concrete = null, $shared = false)
     {
         // If the given types are actually an array, we will assume an alias is being
         // defined and will grab this "real" abstract class name and register this
