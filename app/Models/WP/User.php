@@ -13,6 +13,7 @@ class User extends Model
     protected $table = 'users';
     public $timestamps = false;
     protected $primaryKey = 'ID';
+    protected $appends = ['capabilities'];
 
     const CREATED_AT = 'user_registered';
 
