@@ -35,7 +35,7 @@ trait HasMeta {
     /**
      * Deletes all meta for this object with given key
      */
-    public function deleteMeta ($meta_key = false)
+    public function deleteMeta($meta_key = false)
     {
         if ($meta_key) {
             $this->meta()->where('meta_key', $meta_key)->delete();
