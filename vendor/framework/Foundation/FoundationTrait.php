@@ -179,4 +179,9 @@ trait FoundationTrait
         $parts = explode('\\', $handler);
         return count($parts) > 1;
     }
+
+    public function user()
+    {
+        // dd(get_userdata(get_current_user_id()));
+    }
 }

@@ -14,6 +14,7 @@ class DashboardController extends Controller
 
     public function index(Request $request)
     {
+        // dd(\Alpha\App\App::user());
         // return get_userdata(get_current_user_id());
         // return wp_get_current_user();
         // return \Alpha\App\Models\WP\User::with('meta')->find(1);
