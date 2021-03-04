@@ -19,7 +19,7 @@ class Application extends Container
     protected $controllerNamespace = null;
     protected $permissionNamespace = null;
 
-    public function __construct($file)
+    public function __construct($file = null)
     {
         $this->init($file);
         $this->setAppLevelNamespace();
@@ -28,9 +28,16 @@ class Application extends Container
 
     protected function init($file)
     {
-        $this->file = $file;
-        $this->basePath = plugin_dir_path($file);
-        $this->baseUrl = plugin_dir_url($file);
+        $this->file = $this->pluginFilePath($file);
+        $this->basePath = plugin_dir_path($this->file);
+        $this->baseUrl = plugin_dir_url($this->file);
+    }
+
+    protected function pluginFilePath($file)
+    {
+        $file = $file ?: realpath(__DIR__ . '/../../../plugin.php');
+        
+        return $file;
     }
 
     protected function setAppLevelNamespace()
