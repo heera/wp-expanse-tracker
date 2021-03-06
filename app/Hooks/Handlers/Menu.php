@@ -24,9 +24,9 @@ class Menu
 
     public function renderApp()
     {
-        $app = App::getInstance();
+        $view = App::make('view');
         $this->enqueueAssets();
-        $app->view->render('admin.menu');
+        $view->render('admin.menu');
     }
 
     public function enqueueAssets()
