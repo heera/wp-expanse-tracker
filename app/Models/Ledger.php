@@ -8,6 +8,10 @@ class Ledger extends Model
 
     protected $fillable = ['name', 'account_id', 'note'];
     
+    protected $casts = [
+        'account_id' => 'int'
+    ];
+    
     public function account()
     {
         return $this->belongsTo(Account::class);
