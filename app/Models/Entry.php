@@ -10,6 +10,10 @@ class Entry extends Model
         'title', 'amount', 'ledger_id', 'note', 'created_at', 'updated_at'
     ];
 
+    protected $casts = [
+        'ledger_id' => 'int'
+    ];
+
     public static function boot()
     {
         parent::boot();
